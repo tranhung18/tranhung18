@@ -27,20 +27,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ----------------------------------------------------
-    // 2. HEADER SHADOW ON SCROLL
+    // 2. HEADER SHADOW ON SCROLL & SCROLL PROGRESS BAR
     // ----------------------------------------------------
     const header = document.querySelector('.header');
+    const scrollProgressEl = document.querySelector('.scroll-progress');
+
     window.addEventListener('scroll', () => {
         if (window.scrollY > 40) {
             header.style.padding = '0.75rem 0';
-            header.style.background = 'rgba(4, 5, 10, 0.85)';
+            header.style.background = 'rgba(4, 5, 10, 0.9)';
             header.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.4)';
         } else {
             header.style.padding = '1.25rem 0';
             header.style.background = 'rgba(7, 9, 19, 0.65)';
             header.style.boxShadow = 'none';
         }
-    });
+        if (scrollProgressEl) {
+            const docEl = document.documentElement;
+            const scrollTop = docEl.scrollTop || document.body.scrollTop;
+            const scrollHeight = docEl.scrollHeight - docEl.clientHeight;
+            scrollProgressEl.style.width = Math.min(100, (scrollTop / scrollHeight) * 100) + '%';
+        }
+    }, { passive: true });
 
     // ----------------------------------------------------
     // 3. BILINGUAL SUPPORT & TYPING ENGINE INTEGRATION
@@ -152,30 +160,29 @@ document.addEventListener('DOMContentLoaded', () => {
     revealElements.forEach(el => revealObserver.observe(el));
 
     // ----------------------------------------------------
-    // 5. ACTIVE LINK HIGHLIGHTING
+    // 5. ACTIVE LINK HIGHLIGHTING (Scroll-Based — fixes tall sections)
     // ----------------------------------------------------
-    const sections = document.querySelectorAll('section');
-    const scrollObserverOptions = {
-        threshold: 0.35,
-        rootMargin: '-10% 0px -40% 0px'
-    };
+    const sections = document.querySelectorAll('section[id]');
 
-    const activeLinkObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const sectionId = entry.target.getAttribute('id');
-                navLinks.forEach(link => {
-                    if (link.getAttribute('href') === `#${sectionId}`) {
-                        link.classList.add('active');
-                    } else {
-                        link.classList.remove('active');
-                    }
-                });
+    function updateActiveNav() {
+        const scrollPos = window.scrollY + window.innerHeight * 0.35;
+        let currentId = '';
+
+        sections.forEach(section => {
+            if (section.offsetTop <= scrollPos) {
+                currentId = section.id;
             }
         });
-    }, scrollObserverOptions);
 
-    sections.forEach(section => activeLinkObserver.observe(section));
+        if (currentId === 'home' || !currentId) currentId = 'about';
+
+        navLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === `#${currentId}`);
+        });
+    }
+
+    window.addEventListener('scroll', updateActiveNav, { passive: true });
+    updateActiveNav();
 
     // ----------------------------------------------------
     // 6. TECH STACK INTERACTIVE FILTERING
@@ -278,4 +285,220 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 6000);
         }
     }
+
+    // ----------------------------------------------------
+    // 8. TIMELINE SLIDE-IN ANIMATION
+    // ----------------------------------------------------
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    if (timelineItems.length > 0) {
+        const timelineObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const item = entry.target;
+                    item.classList.add('slide-in');
+                    const content = item.querySelector('.timeline-content');
+                    if (content) {
+                        content.addEventListener('animationend', () => {
+                            item.classList.remove('slide-in');
+                            item.classList.add('revealed');
+                        }, { once: true });
+                    }
+                    timelineObserver.unobserve(item);
+                }
+            });
+        }, { threshold: 0.2, rootMargin: '0px 0px -40px 0px' });
+        timelineItems.forEach(item => timelineObserver.observe(item));
+    }
+
+    // ----------------------------------------------------
+    // 9. SKILL CARDS STAGGERED REVEAL
+    // ----------------------------------------------------
+    const skillsSection = document.getElementById('skills');
+    const allSkillCards = document.querySelectorAll('.skill-card');
+    let skillsRevealed = false;
+
+    if (skillsSection && allSkillCards.length > 0) {
+        const skillsRevealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !skillsRevealed) {
+                    skillsRevealed = true;
+                    const visibleCards = [...allSkillCards].filter(c =>
+                        window.getComputedStyle(c).display !== 'none'
+                    );
+                    visibleCards.forEach((card, idx) => {
+                        card.style.animation = `cardReveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) ${idx * 65}ms both`;
+                        card.addEventListener('animationend', () => {
+                            card.style.animation = '';
+                            card.classList.add('card-revealed');
+                        }, { once: true });
+                    });
+                    skillsRevealObserver.unobserve(skillsSection);
+                }
+            });
+        }, { threshold: 0.05 });
+        skillsRevealObserver.observe(skillsSection);
+    }
+
+    // ----------------------------------------------------
+    // 10. STATS POP-IN ANIMATION
+    // ----------------------------------------------------
+    const profileStats = document.querySelector('.profile-stats');
+    if (profileStats) {
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.querySelectorAll('.stat-number').forEach((num, idx) => {
+                        num.style.animation = `statPopIn 0.65s cubic-bezier(0.16, 1, 0.3, 1) ${idx * 160}ms both`;
+                        num.addEventListener('animationend', () => {
+                            num.style.animation = '';
+                            num.classList.add('stat-revealed');
+                        }, { once: true });
+                    });
+                    statsObserver.unobserve(profileStats);
+                }
+            });
+        }, { threshold: 0.5 });
+        statsObserver.observe(profileStats);
+    }
+
+    // ----------------------------------------------------
+    // 11. 3D TILT EFFECT ON CARDS
+    // ----------------------------------------------------
+    document.querySelectorAll('.skill-card, .project-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = (e.clientY - rect.top) / rect.height;
+            const tiltX = (y - 0.5) * 8;
+            const tiltY = (0.5 - x) * 8;
+            card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-6px)`;
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+            card.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+            setTimeout(() => { card.style.transition = ''; }, 500);
+        });
+    });
+
+    // ----------------------------------------------------
+    // 12. CUSTOM CURSOR + CLICK RIPPLE + HERO EFFECTS
+    // ----------------------------------------------------
+    const isFinePointer = window.matchMedia('(pointer: fine)').matches;
+    const cursorDotEl   = document.getElementById('cursor-dot');
+    const cursorRingEl  = document.getElementById('cursor-ring');
+
+    if (isFinePointer && cursorDotEl && cursorRingEl) {
+        let mx = -200, my = -200;
+        let rx = -200, ry = -200;
+
+        // Dot follows cursor instantly
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX;
+            my = e.clientY;
+            cursorDotEl.style.left = mx + 'px';
+            cursorDotEl.style.top  = my + 'px';
+        }, { passive: true });
+
+        // Ring follows with smooth lerp
+        (function lerpRing() {
+            rx += (mx - rx) * 0.13;
+            ry += (my - ry) * 0.13;
+            cursorRingEl.style.left = rx + 'px';
+            cursorRingEl.style.top  = ry + 'px';
+            requestAnimationFrame(lerpRing);
+        })();
+
+        // Hover state on interactive elements
+        document.querySelectorAll(
+            'a, button, .btn, .filter-btn, .skill-card, .project-card, .lang-btn, input, textarea'
+        ).forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorDotEl.classList.add('is-hovering');
+                cursorRingEl.classList.add('is-hovering');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorDotEl.classList.remove('is-hovering');
+                cursorRingEl.classList.remove('is-hovering');
+            });
+        });
+
+        // Click pulse
+        document.addEventListener('mousedown', () => {
+            cursorDotEl.classList.add('is-clicking');
+            cursorRingEl.classList.add('is-clicking');
+        });
+        document.addEventListener('mouseup', () => {
+            cursorDotEl.classList.remove('is-clicking');
+            cursorRingEl.classList.remove('is-clicking');
+        });
+    }
+
+    // Click ripple shockwave (fine pointer only)
+    if (isFinePointer) {
+        document.addEventListener('click', e => {
+            const ripple = document.createElement('div');
+            ripple.className = 'cursor-ripple';
+            ripple.style.left = e.clientX + 'px';
+            ripple.style.top  = e.clientY + 'px';
+            document.body.appendChild(ripple);
+            ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
+        });
+    }
+
+    // Hero spotlight + parallax on mousemove
+    const heroSectionEl  = document.querySelector('.hero-section');
+    const heroSpotlight  = document.querySelector('.hero-spotlight');
+    const heroParallaxLayers = heroSectionEl ? [
+        { el: heroSectionEl.querySelector('.hero-badge'),    d: 16 },
+        { el: heroSectionEl.querySelector('.hero-title'),    d: 26 },
+        { el: heroSectionEl.querySelector('.hero-subtitle'), d: 18 },
+        { el: heroSectionEl.querySelector('.hero-desc'),     d: 10 },
+        { el: heroSectionEl.querySelector('.hero-actions'),  d: 7  },
+    ].filter(l => l.el) : [];
+
+    if (heroSectionEl && isFinePointer) {
+        heroSectionEl.addEventListener('mousemove', e => {
+            const rect = heroSectionEl.getBoundingClientRect();
+
+            // Move spotlight origin to cursor
+            if (heroSpotlight) {
+                const px = ((e.clientX - rect.left) / rect.width  * 100).toFixed(2);
+                const py = ((e.clientY - rect.top)  / rect.height * 100).toFixed(2);
+                heroSpotlight.style.setProperty('--mx', px + '%');
+                heroSpotlight.style.setProperty('--my', py + '%');
+            }
+
+            // Subtle parallax: each layer moves proportional to depth
+            const dx = (e.clientX - rect.left - rect.width  / 2) / (rect.width  / 2); // -1 to 1
+            const dy = (e.clientY - rect.top  - rect.height / 2) / (rect.height / 2);
+            heroParallaxLayers.forEach(({ el, d }) => {
+                el.style.transform  = `translate(${dx * d * 0.5}px, ${dy * d * 0.35}px)`;
+                el.style.transition = 'transform 0.08s linear';
+            });
+        }, { passive: true });
+
+        heroSectionEl.addEventListener('mouseleave', () => {
+            heroParallaxLayers.forEach(({ el }) => {
+                el.style.transform  = '';
+                el.style.transition = 'transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)';
+                setTimeout(() => { el.style.transition = ''; }, 900);
+            });
+        });
+    }
+
+    // Magnetic pull on hero CTA buttons
+    document.querySelectorAll('.hero-actions .btn').forEach(btn => {
+        btn.addEventListener('mousemove', e => {
+            const r  = btn.getBoundingClientRect();
+            const dx = (e.clientX - (r.left + r.width  / 2)) * 0.28;
+            const dy = (e.clientY - (r.top  + r.height / 2)) * 0.28;
+            btn.style.transform  = `translate(${dx}px, ${dy}px) scale(1.06)`;
+            btn.style.transition = 'transform 0.12s ease-out';
+        });
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform  = '';
+            btn.style.transition = 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)';
+            setTimeout(() => { btn.style.transition = ''; }, 550);
+        });
+    });
 });

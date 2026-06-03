@@ -28,11 +28,21 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="lang-en">
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
+
     <!-- ThreeJS 3D Canvas Background -->
     <div id="canvas-container"></div>
 
+    <!-- Ambient Background Orbs -->
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
     <!-- Floating Navigation Bar -->
     <header class="header">
+        <div class="scroll-progress"></div>
         <div class="header-container">
             <a href="#" class="logo" id="logo-click">
                 <span class="bracket">&lt;</span>Hùng<span class="accent">.Dev</span><span class="bracket">/&gt;</span>
@@ -80,6 +90,7 @@
     <main>
         <!-- Hero Section -->
         <section id="home" class="hero-section">
+            <div class="hero-spotlight"></div>
             <div class="hero-content">
                 <div class="hero-badge fade-in">
                     <span class="pulse-dot"></span>
@@ -109,16 +120,6 @@
                         <span class="vi">Liên hệ ngay</span>
                     </a>
                 </div>
-            </div>
-            
-            <div class="scroll-indicator fade-in">
-                <div class="mouse">
-                    <div class="wheel"></div>
-                </div>
-                <span>
-                    <span class="en">Scroll Down</span>
-                    <span class="vi">Cuộn xuống</span>
-                </span>
             </div>
         </section>
 
@@ -392,18 +393,18 @@
                     </div>
                     <div class="skill-card glass-card" data-category="devops" data-color="cicd">
                         <div class="skill-icon"><i class="fa-solid fa-circle-nodes"></i></div>
-                        <h4 class="skill-name">CI/CD & Docker</h4>
+                        <h4 class="skill-name">DevOps & Tools</h4>
                         <p class="skill-desc">
-                            <span class="en">Continuous integration, CircleCI workflows, basic Docker setups.</span>
-                            <span class="vi">Quy trình tích hợp liên tục, công cụ CircleCI, thiết lập Docker cơ bản.</span>
+                            <span class="en">Git, CI/CD, Docker basic, Postman, PgAdmin4, MySQL Workbench.</span>
+                            <span class="vi">Sử dụng Git, CI/CD, Docker cơ bản, Postman, PgAdmin4, MySQL Workbench.</span>
                         </p>
                     </div>
                     <div class="skill-card glass-card" data-category="devops" data-color="postman">
                         <div class="skill-icon"><i class="fa-solid fa-brain"></i></div>
                         <h4 class="skill-name">AI Productivity</h4>
                         <p class="skill-desc">
-                            <span class="en">Claude Code, Cursor, Antigravity, Codex for extreme velocity.</span>
-                            <span class="vi">Ứng dụng Claude Code, Cursor, Antigravity để tăng tốc phát triển.</span>
+                            <span class="en">Claude Code, Cursor, Antigravity, Codex, ChatGPT for extreme velocity.</span>
+                            <span class="vi">Ứng dụng Claude Code, Cursor, Antigravity, Codex, ChatGPT tăng tốc độ lập trình.</span>
                         </p>
                     </div>
                 </div>
@@ -442,38 +443,46 @@
                         <div class="project-info">
                             <h3 class="project-name">Matsuo System</h3>
                             <p class="project-subtitle">
-                                <span class="en">CSV Processing & Invoicing Platform</span>
-                                <span class="vi">Hệ thống Xử lý File CSV & Tự động Hóa Hóa đơn</span>
+                                <span class="en">4 members | March 2026 - April 2026</span>
+                                <span class="vi">4 thành viên | Tháng 3/2026 - Tháng 4/2026</span>
                             </p>
                             <p class="project-desc">
-                                <span class="en">A robust corporate CSV data-processing engine tailored to digest complex nested file structures, applying custom parsing rules to generate partner, department, and billing accounts. Built frontend dashboard controls and backend core RESTful API.</span>
-                                <span class="vi">Hệ thống quản lý và xử lý đa loại tệp CSV doanh nghiệp áp dụng các quy tắc lọc riêng biệt. Trích xuất thông tin tự động để đồng bộ với đối tác, phòng ban và tạo hóa đơn đối soát. Đảm nhận cả frontend và hệ thống RESTful API backend.</span>
+                                <span class="en">A web-based system designed to process and manage multiple types of CSV files, where each file type follows its own processing rules. The extracted data is used to generate and manage information for partners, departments, and invoices.</span>
+                                <span class="vi">Hệ thống nền tảng web được thiết kế để xử lý và quản lý nhiều loại tệp CSV, trong đó mỗi loại tệp tuân theo các quy tắc xử lý riêng biệt. Dữ liệu trích xuất được sử dụng để tạo và quản lý thông tin cho đối tác, phòng ban và hóa đơn.</span>
                             </p>
                             <div class="project-highlights">
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Integrated Money Forward invoicing services</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Tích hợp dịch vụ đối soát hóa đơn Money Forward</span>
+                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Built the frontend interface and backend APIs based on project requirements.</span>
+                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Xây dựng giao diện frontend và hệ thống API backend dựa trên yêu cầu dự án.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Handled large datasets with optimized queries</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Xử lý mượt mà lượng dữ liệu lớn nhờ truy vấn tối ưu</span>
+                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Designed and implemented CSV file upload, creation, and update features based on different file types with specific processing rules.</span>
+                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Thiết kế và triển khai tính năng tải lên, tạo mới và cập nhật tệp CSV cho từng loại tệp với quy tắc xử lý cụ thể.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Complex CSV parsing & upload workflows</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Xây dựng tính năng tải và xử lý CSV theo luồng bảo mật</span>
+                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Implemented data processing logic to transform CSV data into partner, department, and invoice information.</span>
+                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Triển khai logic xử lý dữ liệu để chuyển đổi dữ liệu CSV thành thông tin đối tác, phòng ban và hóa đơn.</span>
+                                </span>
+                                <span>
+                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Integrated the system with Money Forward for invoice creation and management.</span>
+                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Tích hợp hệ thống với dịch vụ Money Forward để tạo và quản lý hóa đơn.</span>
+                                </span>
+                                <span>
+                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Developed and optimized RESTful APIs for frontend consumption.</span>
+                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Phát triển và tối ưu hóa hệ thống RESTful API phục vụ phía frontend.</span>
+                                </span>
+                                <span>
+                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Ensured system performance and stability when handling multiple files and large datasets.</span>
+                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Đảm bảo hiệu năng và độ ổn định của hệ thống khi xử lý nhiều tệp tin và tập dữ liệu lớn.</span>
                                 </span>
                             </div>
                             <div class="project-tech-tags">
                                 <span class="tech-tag">Laravel</span>
                                 <span class="tech-tag">VueJS</span>
                                 <span class="tech-tag">PostgreSQL</span>
-                                <span class="tech-tag">Money Forward API</span>
-                                <span class="tech-tag">CSV Processing</span>
+                                <span class="tech-tag">Money Forward Service</span>
                             </div>
-                            <div class="project-links">
-                                <a href="https://github.com/tranhung18" target="_blank" class="project-link-btn"><i class="fa-brands fa-github"></i> Codebase</a>
-                                <a href="#" class="project-link-btn disabled"><i class="fa-solid fa-arrow-up-right-from-square"></i> Internal System</a>
-                            </div>
+
                         </div>
                     </div>
 
@@ -497,39 +506,41 @@
                         <div class="project-info">
                             <h3 class="project-name">Fany Story</h3>
                             <p class="project-subtitle">
-                                <span class="en">Content Platform & Admin Portal</span>
-                                <span class="vi">Ứng dụng Đọc truyện & Hệ thống Quản trị</span>
+                                <span class="en">5 members | November 2024 - February 2025</span>
+                                <span class="vi">5 thành viên | Tháng 11/2024 - Tháng 2/2025</span>
                             </p>
                             <p class="project-desc">
-                                <span class="en">A highly interactive story and manga platform with an independent administrative dashboard. Converted high-fidelity Figma wireframes into pixel-perfect responsive layouts, rendering PDF registration guidelines inside the client application using PDF.js.</span>
-                                <span class="vi">Ứng dụng đọc truyện trực tuyến tích hợp cổng quản trị nội dung nâng cao, kiểm soát đăng ký tác giả và tải truyện. Chuyển đổi bản thiết kế Figma thành giao diện chuẩn xác đến từng pixel, kết hợp thư viện PDF.js hiển thị hồ sơ tác giả.</span>
+                                <span class="en">A story-reading web app with a separate web-based admin portal for content management, including author registration and story uploads.</span>
+                                <span class="vi">Ứng dụng web đọc truyện với cổng quản trị riêng biệt để quản lý nội dung, bao gồm đăng ký tác giả và đăng tải chương truyện.</span>
                             </p>
                             <div class="project-highlights">
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Developed backend APIs using NestJs & Laravel</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Phát triển hệ thống API linh hoạt qua NestJs & Laravel</span>
+                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Built core features: users, manga, reader, chapters, master data and uploads.</span>
+                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Xây dựng các tính năng cốt lõi: quản lý người dùng, truyện tranh (manga), giao diện đọc, chương truyện, dữ liệu danh mục (master data) và tải lên tệp tin.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Responsive layouts based on Figma with Ant Design</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Giao diện chuẩn responsive với Ant Design</span>
+                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Converted Figma designs into responsive, accessible UIs with pixel-perfect fidelity.</span>
+                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Chuyển đổi bản thiết kế Figma thành giao diện responsive dễ tiếp cận với độ chính xác cao.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Renders PDFs seamlessly on UI via PDF.js</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Nhúng tài liệu PDF.js trực quan trên trình duyệt</span>
+                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Used PDF.js to render admin-uploaded registration PDFs for end users.</span>
+                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Sử dụng thư viện PDF.js để hiển thị trực quan tài liệu hướng dẫn tác giả đăng ký (PDF) cho người dùng cuối.</span>
+                                </span>
+                                <span>
+                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Participated in code reviews to maintain code quality.</span>
+                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Tham gia đánh giá mã nguồn (code review) để duy trì chất lượng code.</span>
                                 </span>
                             </div>
                             <div class="project-tech-tags">
                                 <span class="tech-tag">VueJS</span>
+                                <span class="tech-tag">TailwindCSS</span>
+                                <span class="tech-tag">PDF.js</span>
+                                <span class="tech-tag">Ant Design</span>
                                 <span class="tech-tag">Laravel</span>
                                 <span class="tech-tag">NestJs</span>
                                 <span class="tech-tag">MySQL</span>
-                                <span class="tech-tag">PDF.js</span>
-                                <span class="tech-tag">TailwindCSS</span>
                             </div>
-                            <div class="project-links">
-                                <a href="https://github.com/tranhung18" target="_blank" class="project-link-btn"><i class="fa-brands fa-github"></i> Codebase</a>
-                                <a href="#" class="project-link-btn disabled"><i class="fa-solid fa-arrow-up-right-from-square"></i> Demo</a>
-                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -566,9 +577,10 @@
                                     <ul>
                                         <li>Developed and maintained full-stack web applications using PHP and modern frontend frameworks.</li>
                                         <li>Designed and optimized RESTful APIs with scalable architecture and efficient data flow.</li>
-                                        <li>Built responsive, cross-browser compatible UIs based on Figma designs with extreme fidelity.</li>
-                                        <li>Integrated payment gateways (Stripe, PayJP) and handled secure transactional flows.</li>
-                                        <li>Participated in code reviews, bug fixes, and performance optimization inside team collaborations.</li>
+                                        <li>Built responsive, cross-browser compatible UIs based on Figma designs.</li>
+                                        <li>Customized WordPress themes and plugins for business and e-commerce needs.</li>
+                                        <li>Integrated payment gateways (Stripe, PayJP) for secure transactions.</li>
+                                        <li>Performed code reviews, bug fixing, and performance optimization in team collaboration.</li>
                                     </ul>
                                 </span>
                                 <span class="vi">
@@ -576,6 +588,7 @@
                                         <li>Phát triển và bảo trì các ứng dụng web Full-stack sử dụng PHP và các framework frontend hiện đại.</li>
                                         <li>Thiết kế và tối ưu hóa hệ thống API RESTful với kiến trúc mở rộng và luồng dữ liệu tối ưu.</li>
                                         <li>Xây dựng giao diện responsive tương thích đa trình duyệt từ bản thiết kế Figma chuẩn xác.</li>
+                                        <li>Tùy biến các giao diện (theme) và plugin WordPress đáp ứng nhu cầu kinh doanh và thương mại điện tử.</li>
                                         <li>Tích hợp các cổng thanh toán quốc tế (Stripe, PayJP) và xử lý giao dịch bảo mật.</li>
                                         <li>Tham gia đánh giá mã nguồn (code review), sửa lỗi và tối ưu hóa hiệu năng trong nhóm.</li>
                                     </ul>
@@ -600,18 +613,18 @@
                             <div class="timeline-details">
                                 <span class="en">
                                     <ul>
-                                        <li>Maintained and contributed to multiple onsite projects ranging from legacy PHP systems (PHP 5.x–8.x) to modern Laravel & VueJS platforms.</li>
-                                        <li>Built and customized WordPress websites, including advanced theme and plugin development.</li>
-                                        <li>Applied automated CI/CD pipelines using CircleCI to support robust build and deployment workflows.</li>
-                                        <li>Collaborated closely with cross-functional team members to guarantee system stability and on-time delivery.</li>
+                                        <li>Maintained and contributed to multiple onsite projects, ranging from legacy PHP systems (PHP 5.x–8.x) to modern Laravel & VueJS applications, as well as WordPress-based websites.</li>
+                                        <li>Built and customized WordPress websites, including theme and plugin development, ensuring performance optimization.</li>
+                                        <li>Collaborated closely with team members to ensure system stability, code quality, and on-time delivery.</li>
+                                        <li>Applied CI/CD pipelines using CircleCI to support build and deployment workflows.</li>
                                     </ul>
                                 </span>
                                 <span class="vi">
                                     <ul>
-                                        <li>Bảo trì và đóng góp vào nhiều dự án tại văn phòng khách hàng, từ hệ thống PHP cũ (PHP 5.x–8.x) đến các ứng dụng Laravel & VueJS hiện đại.</li>
-                                        <li>Xây dựng và tùy biến website WordPress, bao gồm lập trình giao diện nâng cao và plugin tối ưu.</li>
-                                        <li>Ứng dụng quy trình tự động hóa CI/CD thông qua CircleCI để hỗ trợ luồng đóng gói và triển khai.</li>
-                                        <li>Hợp tác chặt chẽ với các thành viên trong nhóm nhằm đảm bảo sự ổn định của hệ thống và bàn giao đúng hẹn.</li>
+                                        <li>Bảo trì và đóng góp vào nhiều dự án tại văn phòng khách hàng, từ hệ thống PHP cũ (PHP 5.x–8.x) đến các ứng dụng Laravel & VueJS hiện đại, cũng như các trang web nền tảng WordPress.</li>
+                                        <li>Xây dựng và tùy biến website WordPress, bao gồm lập trình giao diện (theme) và plugin, đảm bảo tối ưu hóa hiệu năng.</li>
+                                        <li>Hợp tác chặt chẽ với các thành viên trong nhóm để đảm bảo sự ổn định của hệ thống, chất lượng mã nguồn và bàn giao đúng hẹn.</li>
+                                        <li>Áp dụng quy trình CI/CD sử dụng CircleCI nhằm hỗ trợ các luồng đóng gói và triển khai.</li>
                                     </ul>
                                 </span>
                             </div>
@@ -712,52 +725,6 @@
                                 </div>
                             </a>
                         </div>
-
-                        <!-- Footer Views badge -->
-                        <div class="footer-views">
-                            <img src="https://komarev.com/ghpvc/?username=tranhung18&color=7C3AED&style=flat-square&label=Profile+Views" alt="Profile Views">
-                        </div>
-                    </div>
-
-                    <!-- Contact Form -->
-                    <div class="contact-form-panel glass-card">
-                        <form id="contact-form" autocomplete="off">
-                            <div class="form-group">
-                                <label for="form-name">
-                                    <span class="en">Full Name</span>
-                                    <span class="vi">Họ và Tên</span>
-                                </label>
-                                <input type="text" id="form-name" required placeholder="John Doe">
-                                <span class="input-focus-line"></span>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="form-email">
-                                    <span class="en">Email Address</span>
-                                    <span class="vi">Địa chỉ Email</span>
-                                </label>
-                                <input type="email" id="form-email" required placeholder="john@example.com">
-                                <span class="input-focus-line"></span>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="form-message">
-                                    <span class="en">Your Message</span>
-                                    <span class="vi">Tin nhắn của bạn</span>
-                                </label>
-                                <textarea id="form-message" rows="5" required placeholder="Tell me about your project..."></textarea>
-                                <span class="input-focus-line"></span>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-primary submit-btn">
-                                <span>
-                                    <span class="en">Send Message</span>
-                                    <span class="vi">Gửi tin nhắn</span>
-                                </span>
-                                <i class="fa-solid fa-paper-plane"></i>
-                            </button>
-                        </form>
-                        <div class="form-status" id="form-status"></div>
                     </div>
                 </div>
             </div>
