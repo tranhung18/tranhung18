@@ -1,7 +1,7 @@
 <div align="center">
 
 <!-- Animated Header Banner -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Trần%20Hùng&fontSize=60&fontColor=fff&animation=twinkling&fontAlignY=32&desc=Full-Stack%20Web%20Developer&descAlignY=55&descSize=18" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Trần%20Hùng&fontSize=60&fontColor=fff&animation=twinkling&fontAlignY=32&desc=Middle%20Full-Stack%20Developer&descAlignY=55&descSize=18" />
 
 <img style="width: 350px;" src="https://camo.githubusercontent.com/660e8839e806a7a23f61b155be2e078a1cbd67f33c65b38994f8318cbd9e50f6/68747470733a2f2f6d656469612e67697068792e636f6d2f6d656469612f7167515567674143335066763638377150432f67697068792e676966" />
 
@@ -11,9 +11,10 @@
 
 ## 🙋‍♂️ About Me
 
-- 💼 **2+ years** building web applications with modern frontend & backend frameworks
+- 💼 **3+ years** building web applications with modern frontend & backend frameworks
 - 🔥 Experienced in **RESTful APIs**, **relational databases**, and **responsive UIs**
 - ⚡ Strong in **system design**, **Git**, **CI/CD** and **performance optimization**
+- 🤖 Utilize **AI-assisted development tools** (Claude Code, Cursor, Antigravity, Codex) to boost productivity and code quality
 - 🎯 Aiming for **Senior Full-Stack** growth
 
 ---
@@ -32,11 +33,16 @@
 ### 🚀 Frameworks & Platforms
 
 ![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
-![CakePHP](https://img.shields.io/badge/CakePHP-C32148?style=for-the-badge&logo=cakephp&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
 ![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
 ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![WordPress](https://img.shields.io/badge/WordPress-21759B?style=for-the-badge&logo=wordpress&logoColor=white)
+
+### 🎨 UI Libraries
+
+![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Ant Design](https://img.shields.io/badge/Ant_Design-0170FE?style=for-the-badge&logo=antdesign&logoColor=white)
 
 ### 🗄️ Databases
 
@@ -50,6 +56,12 @@
 ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
 ![PgAdmin](https://img.shields.io/badge/PgAdmin4-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![MySQL Workbench](https://img.shields.io/badge/MySQL_Workbench-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+
+### 🤖 AI Tools / IDE
+
+![Claude Code](https://img.shields.io/badge/Claude_Code-D97757?style=for-the-badge&logo=claude&logoColor=white)
+![Cursor](https://img.shields.io/badge/Cursor-000000?style=for-the-badge&logo=cursor&logoColor=white)
+![Codex](https://img.shields.io/badge/Codex-412991?style=for-the-badge&logo=openai&logoColor=white)
 
 ---
 

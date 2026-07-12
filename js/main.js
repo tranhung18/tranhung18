@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. HEADER SHADOW ON SCROLL & SCROLL PROGRESS BAR
     // ----------------------------------------------------
     const header = document.querySelector('.header');
-    const scrollProgressEl = document.querySelector('.scroll-progress');
 
     window.addEventListener('scroll', () => {
         if (window.scrollY > 40) {
@@ -41,12 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
             header.style.padding = '1.25rem 0';
             header.style.background = 'rgba(7, 9, 19, 0.65)';
             header.style.boxShadow = 'none';
-        }
-        if (scrollProgressEl) {
-            const docEl = document.documentElement;
-            const scrollTop = docEl.scrollTop || document.body.scrollTop;
-            const scrollHeight = docEl.scrollHeight - docEl.clientHeight;
-            scrollProgressEl.style.width = Math.min(100, (scrollTop / scrollHeight) * 100) + '%';
         }
     }, { passive: true });
 
@@ -381,69 +374,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ----------------------------------------------------
-    // 12. CUSTOM CURSOR + CLICK RIPPLE + HERO EFFECTS
+    // 12. HERO EFFECTS
     // ----------------------------------------------------
     const isFinePointer = window.matchMedia('(pointer: fine)').matches;
-    const cursorDotEl   = document.getElementById('cursor-dot');
-    const cursorRingEl  = document.getElementById('cursor-ring');
-
-    if (isFinePointer && cursorDotEl && cursorRingEl) {
-        let mx = -200, my = -200;
-        let rx = -200, ry = -200;
-
-        // Dot follows cursor instantly
-        document.addEventListener('mousemove', e => {
-            mx = e.clientX;
-            my = e.clientY;
-            cursorDotEl.style.left = mx + 'px';
-            cursorDotEl.style.top  = my + 'px';
-        }, { passive: true });
-
-        // Ring follows with smooth lerp
-        (function lerpRing() {
-            rx += (mx - rx) * 0.13;
-            ry += (my - ry) * 0.13;
-            cursorRingEl.style.left = rx + 'px';
-            cursorRingEl.style.top  = ry + 'px';
-            requestAnimationFrame(lerpRing);
-        })();
-
-        // Hover state on interactive elements
-        document.querySelectorAll(
-            'a, button, .btn, .filter-btn, .skill-card, .project-card, .lang-btn, input, textarea'
-        ).forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                cursorDotEl.classList.add('is-hovering');
-                cursorRingEl.classList.add('is-hovering');
-            });
-            el.addEventListener('mouseleave', () => {
-                cursorDotEl.classList.remove('is-hovering');
-                cursorRingEl.classList.remove('is-hovering');
-            });
-        });
-
-        // Click pulse
-        document.addEventListener('mousedown', () => {
-            cursorDotEl.classList.add('is-clicking');
-            cursorRingEl.classList.add('is-clicking');
-        });
-        document.addEventListener('mouseup', () => {
-            cursorDotEl.classList.remove('is-clicking');
-            cursorRingEl.classList.remove('is-clicking');
-        });
-    }
-
-    // Click ripple shockwave (fine pointer only)
-    if (isFinePointer) {
-        document.addEventListener('click', e => {
-            const ripple = document.createElement('div');
-            ripple.className = 'cursor-ripple';
-            ripple.style.left = e.clientX + 'px';
-            ripple.style.top  = e.clientY + 'px';
-            document.body.appendChild(ripple);
-            ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
-        });
-    }
 
     // Hero spotlight + parallax on mousemove
     const heroSectionEl  = document.querySelector('.hero-section');
