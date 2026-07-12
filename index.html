@@ -16,18 +16,23 @@
     <meta property="og:description" content="3+ years building web applications with PHP, Laravel, NestJs, VueJS, and React.">
     <meta property="og:image" content="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Trần%20Hữu%20Hùng&fontSize=60&fontColor=fff">
     
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+    <!-- Self-hosted Fonts (Space Grotesk, Plus Jakarta Sans, JetBrains Mono) -->
+    <link rel="stylesheet" href="css/fonts.css">
+
+    <!-- Phosphor Icons (light weight, UI glyphs) -->
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/light/style.css">
+
     <!-- Core Stylesheet -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="lang-en">
+    <!-- Sentinel: marks the top 40px of the page, watched by IntersectionObserver
+         to toggle the header's "scrolled" state without a scroll listener -->
+    <div id="scroll-sentinel" aria-hidden="true"></div>
+
     <!-- ThreeJS 3D Canvas Background -->
     <div id="canvas-container"></div>
 
@@ -86,34 +91,43 @@
         <!-- Hero Section -->
         <section id="home" class="hero-section">
             <div class="hero-spotlight"></div>
-            <div class="hero-content">
-                <div class="hero-badge fade-in">
-                    <span class="pulse-dot"></span>
-                    <span class="en">Available for Full-Stack Opportunities</span>
-                    <span class="vi">Sẵn sàng cho cơ hội Full-Stack</span>
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <div class="hero-badge fade-in">
+                        <span class="pulse-dot"></span>
+                        <span class="en">Available for Full-Stack Opportunities</span>
+                        <span class="vi">Sẵn sàng cho cơ hội Full-Stack</span>
+                    </div>
+                    <h1 class="hero-title fade-in">
+                        <span class="en">Hi, I'm <span class="gradient-text">Trần Hữu Hùng</span></span>
+                        <span class="vi">Xin chào,<br>Tôi là <span class="gradient-text">Trần Hữu Hùng</span></span>
+                    </h1>
+                    <h2 class="hero-subtitle fade-in">
+                        <span class="en">I am a </span>
+                        <span class="vi">Tôi là </span>
+                        <span class="typing-text"></span><span class="cursor">|</span>
+                    </h2>
+                    <div class="hero-actions fade-in">
+                        <a href="#projects" class="btn btn-primary">
+                            <span class="en">Explore My Work</span>
+                            <span class="vi">Khám phá dự án</span>
+                        </a>
+                        <a href="#contact" class="btn btn-secondary">
+                            <span class="en">Get In Touch</span>
+                            <span class="vi">Liên hệ ngay</span>
+                        </a>
+                    </div>
                 </div>
-                <h1 class="hero-title fade-in">
-                    <span class="en">Hi, I'm <span class="gradient-text">Trần Hữu Hùng</span></span>
-                    <span class="vi">Xin chào,<br>Tôi là <span class="gradient-text">Trần Hữu Hùng</span></span>
-                </h1>
-                <h2 class="hero-subtitle fade-in">
-                    <span class="en">I am a </span>
-                    <span class="vi">Tôi là </span>
-                    <span class="typing-text"></span><span class="cursor">|</span>
-                </h2>
-                <p class="hero-desc fade-in">
-                    <span class="en">A Web Developer with 3+ years of experience building modern web applications using advanced frontend and backend frameworks. Expert in crafting scalable REST APIs, relational database schemas, and clean responsive UI flows with pixel-perfect fidelity.</span>
-                    <span class="vi">Lập trình viên Web với hơn 3 năm kinh nghiệm xây dựng ứng dụng web hiện đại sử dụng các framework frontend và backend tiên tiến. Chuyên sâu xây dựng API RESTful mở rộng, thiết kế cơ sở dữ liệu quan hệ tối ưu và giao diện responsive mượt mà với độ chính xác cao.</span>
-                </p>
-                <div class="hero-actions fade-in">
-                    <a href="#projects" class="btn btn-primary">
-                        <span class="en">Explore My Work</span>
-                        <span class="vi">Khám phá dự án</span>
-                    </a>
-                    <a href="#contact" class="btn btn-secondary">
-                        <span class="en">Get In Touch</span>
-                        <span class="vi">Liên hệ ngay</span>
-                    </a>
+
+                <!-- TODO: replace with a real professional photo (see plan's "Content dependencies").
+                     Placeholder is an intentional monogram mark, not a fake screenshot. -->
+                <div class="hero-visual fade-in">
+                    <div class="hero-visual-bezel">
+                        <div class="hero-visual-core">
+                            <span class="hero-monogram">HH</span>
+                            <i class="ph-light ph-user-circle hero-visual-icon"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -123,8 +137,8 @@
             <div class="section-container">
                 <div class="section-header">
                     <h2 class="section-title">
-                        <span class="en">🙋‍♂️ About Me</span>
-                        <span class="vi">🙋‍♂️ Giới thiệu</span>
+                        <span class="en">About Me</span>
+                        <span class="vi">Giới thiệu</span>
                     </h2>
                     <div class="section-divider"></div>
                 </div>
@@ -132,10 +146,12 @@
                 <div class="about-grid">
                     <!-- Stat Card / Graphic -->
                     <div class="about-visual">
+                        <div class="profile-bezel">
                         <div class="glass-card profile-card">
                             <div class="profile-glow"></div>
+                            <!-- TODO: swap for a real photo - <img class="profile-avatar" src="assets/profile.jpg" alt="Trần Hữu Hùng"> -->
                             <div class="profile-avatar">
-                                <i class="fa-solid fa-code-terminal"></i>
+                                <i class="ph-light ph-terminal"></i>
                             </div>
                             <h3 class="profile-name">Trần Hữu Hùng</h3>
                             <p class="profile-role">
@@ -166,6 +182,7 @@
                                 </div>
                             </div>
                         </div>
+                        </div>
                     </div>
 
                     <!-- Personal Statement -->
@@ -184,29 +201,29 @@
                         </p>
                         
                         <div class="key-strengths">
-                            <div class="strength-tag"><i class="fa-solid fa-bolt text-laravel"></i> RESTful APIs</div>
+                            <div class="strength-tag"><i class="ph-light ph-lightning"></i> RESTful APIs</div>
                             <div class="strength-tag">
-                                <i class="fa-solid fa-database text-postgres"></i> 
+                                <i class="ph-light ph-database"></i>
                                 <span class="en">Relational Databases</span>
                                 <span class="vi">Cơ sở dữ liệu quan hệ</span>
                             </div>
                             <div class="strength-tag">
-                                <i class="fa-solid fa-mobile-screen text-react"></i> 
+                                <i class="ph-light ph-device-mobile"></i>
                                 <span class="en">Figma to UI Fidelity</span>
                                 <span class="vi">Chuyển đổi Figma chuẩn</span>
                             </div>
                             <div class="strength-tag">
-                                <i class="fa-solid fa-brain text-cyan"></i> 
+                                <i class="ph-light ph-brain"></i>
                                 <span class="en">AI-Assisted Efficiency</span>
                                 <span class="vi">Hiệu suất tối ưu bằng AI</span>
                             </div>
                             <div class="strength-tag">
-                                <i class="fa-solid fa-arrows-spin text-pink"></i> 
+                                <i class="ph-light ph-arrows-clockwise"></i>
                                 <span class="en">CI/CD Pipelines & Automation</span>
                                 <span class="vi">Quy trình CI/CD tự động</span>
                             </div>
                             <div class="strength-tag">
-                                <i class="fa-solid fa-arrow-trend-up text-vue"></i> 
+                                <i class="ph-light ph-trend-up"></i>
                                 <span class="en">Continuous Growth to Senior</span>
                                 <span class="vi">Định hướng Senior dài hạn</span>
                             </div>
@@ -221,8 +238,8 @@
             <div class="section-container">
                 <div class="section-header">
                     <h2 class="section-title">
-                        <span class="en">🛠️ Tech Stack</span>
-                        <span class="vi">🛠️ Công nghệ sử dụng</span>
+                        <span class="en">Tech Stack</span>
+                        <span class="vi">Công nghệ sử dụng</span>
                     </h2>
                     <div class="section-divider"></div>
                 </div>
@@ -253,7 +270,7 @@
                 <div class="skills-grid">
                     <!-- Languages -->
                     <div class="skill-card glass-card" data-category="languages" data-color="html">
-                        <div class="skill-icon"><i class="fa-brands fa-html5"></i></div>
+                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/html5/E34F26" alt="HTML5" class="brand-icon" loading="lazy" width="28" height="28"></div>
                         <h4 class="skill-name">HTML5</h4>
                         <p class="skill-desc">
                             <span class="en">Semantic layouts and search engine optimization.</span>
@@ -261,7 +278,7 @@
                         </p>
                     </div>
                     <div class="skill-card glass-card" data-category="languages" data-color="css">
-                        <div class="skill-icon"><i class="fa-brands fa-css3-alt"></i></div>
+                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/css/1572B6" alt="CSS3" class="brand-icon" loading="lazy" width="28" height="28"></div>
                         <h4 class="skill-name">CSS3 / SCSS</h4>
                         <p class="skill-desc">
                             <span class="en">Responsive grids, SCSS mapping, structural layouts.</span>
@@ -269,7 +286,7 @@
                         </p>
                     </div>
                     <div class="skill-card glass-card" data-category="languages" data-color="js">
-                        <div class="skill-icon"><i class="fa-brands fa-square-js"></i></div>
+                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="JavaScript" class="brand-icon" loading="lazy" width="28" height="28"></div>
                         <h4 class="skill-name">JavaScript</h4>
                         <p class="skill-desc">
                             <span class="en">ES6+ syntax, asynchronous event flows, DOM handling.</span>
@@ -277,7 +294,7 @@
                         </p>
                     </div>
                     <div class="skill-card glass-card" data-category="languages" data-color="ts">
-                        <div class="skill-icon"><i class="fa-solid fa-code-compare"></i></div>
+                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/typescript/3178C6" alt="TypeScript" class="brand-icon" loading="lazy" width="28" height="28"></div>
                         <h4 class="skill-name">TypeScript</h4>
                         <p class="skill-desc">
                             <span class="en">Type-safe development, modular component architectures.</span>
@@ -285,7 +302,7 @@
                         </p>
                     </div>
                     <div class="skill-card glass-card" data-category="languages" data-color="php">
-                        <div class="skill-icon"><i class="fa-brands fa-php"></i></div>
+                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/php/777BB4" alt="PHP" class="brand-icon" loading="lazy" width="28" height="28"></div>
                         <h4 class="skill-name">PHP</h4>
                         <p class="skill-desc">
                             <span class="en">Full-stack web scripting, OOP patterns, secure session handling.</span>
@@ -293,7 +310,7 @@
                         </p>
                     </div>
                     <div class="skill-card glass-card" data-category="languages" data-color="python">
-                        <div class="skill-icon"><i class="fa-brands fa-python"></i></div>
+                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/python/3776AB" alt="Python" class="brand-icon" loading="lazy" width="28" height="28"></div>
                         <h4 class="skill-name">Python</h4>
                         <p class="skill-desc">
                             <span class="en">Fast scripting, API automation, data mapping utilities.</span>
@@ -302,8 +319,8 @@
                     </div>
 
                     <!-- Frameworks -->
-                    <div class="skill-card glass-card" data-category="frameworks" data-color="laravel">
-                        <div class="skill-icon"><i class="fa-brands fa-laravel"></i></div>
+                    <div class="skill-card glass-card skill-card--wide" data-category="frameworks" data-color="laravel">
+                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/laravel/FF2D20" alt="Laravel" class="brand-icon" loading="lazy" width="28" height="28"></div>
                         <h4 class="skill-name">Laravel</h4>
                         <p class="skill-desc">
                             <span class="en">Eloquent ORM, complex relational migrations, secure API gateways.</span>
@@ -311,15 +328,15 @@
                         </p>
                     </div>
                     <div class="skill-card glass-card" data-category="frameworks" data-color="fastapi">
-                        <div class="skill-icon"><i class="fa-solid fa-bolt"></i></div>
+                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/fastapi/009688" alt="FastAPI" class="brand-icon" loading="lazy" width="28" height="28"></div>
                         <h4 class="skill-name">FastAPI</h4>
                         <p class="skill-desc">
                             <span class="en">Modern async Python services, automatic schema definitions.</span>
                             <span class="vi">Kiến trúc backend Python bất đồng bộ, tự động định nghĩa schema.</span>
                         </p>
                     </div>
-                    <div class="skill-card glass-card" data-category="frameworks" data-color="vue">
-                        <div class="skill-icon"><i class="fa-brands fa-vuejs"></i></div>
+                    <div class="skill-card glass-card skill-card--wide" data-category="frameworks" data-color="vue">
+                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/vuedotjs/4FC08D" alt="VueJS" class="brand-icon" loading="lazy" width="28" height="28"></div>
                         <h4 class="skill-name">VueJS</h4>
                         <p class="skill-desc">
                             <span class="en">Reactive dashboards, modular components, Pinia/Vuex management.</span>
@@ -327,7 +344,7 @@
                         </p>
                     </div>
                     <div class="skill-card glass-card" data-category="frameworks" data-color="react">
-                        <div class="skill-icon"><i class="fa-brands fa-react"></i></div>
+                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/react/61DAFB" alt="ReactJS" class="brand-icon" loading="lazy" width="28" height="28"></div>
                         <h4 class="skill-name">ReactJS</h4>
                         <p class="skill-desc">
                             <span class="en">Dynamic interactive SPAs, virtual DOM optimization, state hooks.</span>
@@ -335,7 +352,7 @@
                         </p>
                     </div>
                     <div class="skill-card glass-card" data-category="frameworks" data-color="wordpress">
-                        <div class="skill-icon"><i class="fa-brands fa-wordpress"></i></div>
+                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/wordpress/21759B" alt="WordPress" class="brand-icon" loading="lazy" width="28" height="28"></div>
                         <h4 class="skill-name">WordPress</h4>
                         <p class="skill-desc">
                             <span class="en">Custom theme & plugin engineering, payment gateway hooks.</span>
@@ -345,7 +362,7 @@
 
                     <!-- Databases & UI -->
                     <div class="skill-card glass-card" data-category="databases" data-color="mysql">
-                        <div class="skill-icon"><i class="fa-solid fa-database"></i></div>
+                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/mysql/4479A1" alt="MySQL" class="brand-icon" loading="lazy" width="28" height="28"></div>
                         <h4 class="skill-name">MySQL</h4>
                         <p class="skill-desc">
                             <span class="en">Relational mapping, transactional queries, performance optimization.</span>
@@ -353,7 +370,7 @@
                         </p>
                     </div>
                     <div class="skill-card glass-card" data-category="databases" data-color="postgres">
-                        <div class="skill-icon"><i class="fa-solid fa-server"></i></div>
+                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/postgresql/336791" alt="PostgreSQL" class="brand-icon" loading="lazy" width="28" height="28"></div>
                         <h4 class="skill-name">PostgreSQL</h4>
                         <p class="skill-desc">
                             <span class="en">Complex data structures, custom CTE queries, database indexing.</span>
@@ -361,7 +378,7 @@
                         </p>
                     </div>
                     <div class="skill-card glass-card" data-category="databases" data-color="react">
-                        <div class="skill-icon"><i class="fa-solid fa-compass"></i></div>
+                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/tailwindcss/06B6D4" alt="UI Libraries" class="brand-icon" loading="lazy" width="28" height="28"></div>
                         <h4 class="skill-name">UI Libraries</h4>
                         <p class="skill-desc">
                             <span class="en">TailwindCSS, Ant Design, Bootstrap for pixel-perfect fidelity.</span>
@@ -371,7 +388,7 @@
 
                     <!-- DevOps & AI -->
                     <div class="skill-card glass-card" data-category="devops" data-color="git">
-                        <div class="skill-icon"><i class="fa-brands fa-git-alt"></i></div>
+                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/git/F05032" alt="Git" class="brand-icon" loading="lazy" width="28" height="28"></div>
                         <h4 class="skill-name">Git</h4>
                         <p class="skill-desc">
                             <span class="en">Branching strategies, conflict resolutions, collaborative reviews.</span>
@@ -379,7 +396,7 @@
                         </p>
                     </div>
                     <div class="skill-card glass-card" data-category="devops" data-color="cicd">
-                        <div class="skill-icon"><i class="fa-solid fa-circle-nodes"></i></div>
+                        <div class="skill-icon"><i class="ph-light ph-toolbox"></i></div>
                         <h4 class="skill-name">DevOps & Tools</h4>
                         <p class="skill-desc">
                             <span class="en">Git, CI/CD, Docker basic, Postman, PgAdmin4, MySQL Workbench.</span>
@@ -387,7 +404,7 @@
                         </p>
                     </div>
                     <div class="skill-card glass-card" data-category="devops" data-color="postman">
-                        <div class="skill-icon"><i class="fa-solid fa-brain"></i></div>
+                        <div class="skill-icon"><i class="ph-light ph-brain"></i></div>
                         <h4 class="skill-name">AI Productivity</h4>
                         <p class="skill-desc">
                             <span class="en">Claude Code, Cursor, Antigravity, Codex, ChatGPT for extreme velocity.</span>
@@ -403,14 +420,17 @@
             <div class="section-container">
                 <div class="section-header">
                     <h2 class="section-title">
-                        <span class="en">🚀 Featured Projects</span>
-                        <span class="vi">🚀 Dự án Thực tế</span>
+                        <span class="en">Featured Projects</span>
+                        <span class="vi">Dự án Thực tế</span>
                     </h2>
                     <div class="section-divider"></div>
                 </div>
 
+                <!-- TODO: replace each .project-mockup placeholder below with a real
+                     project screenshot (see plan's "Content dependencies"). -->
                 <div class="projects-grid">
                     <!-- Project 1: Matsuo System -->
+                    <div class="project-bezel">
                     <div class="project-card glass-card">
                         <div class="project-img-wrapper">
                             <div class="project-tag">
@@ -418,12 +438,13 @@
                                 <span class="vi">Backend / Tích hợp API</span>
                             </div>
                             <div class="project-tech-icons">
-                                <span title="Laravel"><i class="fa-brands fa-laravel text-laravel"></i></span>
-                                <span title="VueJS"><i class="fa-brands fa-vuejs text-vue"></i></span>
-                                <span title="PostgreSQL"><i class="fa-solid fa-database text-postgres"></i></span>
+                                <span title="Laravel"><img src="https://cdn.simpleicons.org/laravel/FF2D20" alt="Laravel" loading="lazy" width="20" height="20"></span>
+                                <span title="VueJS"><img src="https://cdn.simpleicons.org/vuedotjs/4FC08D" alt="VueJS" loading="lazy" width="20" height="20"></span>
+                                <span title="PostgreSQL"><img src="https://cdn.simpleicons.org/postgresql/336791" alt="PostgreSQL" loading="lazy" width="20" height="20"></span>
                             </div>
                             <div class="project-gradient-overlay"></div>
                             <div class="project-mockup">
+                                <i class="ph-light ph-receipt mock-icon"></i>
                                 <span class="mock-tag">&lt;Matsuo System/&gt;</span>
                             </div>
                         </div>
@@ -439,28 +460,28 @@
                             </p>
                             <div class="project-highlights">
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Built the frontend interface and backend APIs based on project requirements.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Xây dựng giao diện frontend và hệ thống API backend dựa trên yêu cầu dự án.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Built the frontend interface and backend APIs based on project requirements.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Xây dựng giao diện frontend và hệ thống API backend dựa trên yêu cầu dự án.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Designed and implemented CSV file upload, creation, and update features based on different file types with specific processing rules.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Thiết kế và triển khai tính năng tải lên, tạo mới và cập nhật tệp CSV cho từng loại tệp với quy tắc xử lý cụ thể.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Designed and implemented CSV file upload, creation, and update features based on different file types with specific processing rules.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Thiết kế và triển khai tính năng tải lên, tạo mới và cập nhật tệp CSV cho từng loại tệp với quy tắc xử lý cụ thể.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Implemented data processing logic to transform CSV data into partner, department, and invoice information.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Triển khai logic xử lý dữ liệu để chuyển đổi dữ liệu CSV thành thông tin đối tác, phòng ban và hóa đơn.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Implemented data processing logic to transform CSV data into partner, department, and invoice information.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Triển khai logic xử lý dữ liệu để chuyển đổi dữ liệu CSV thành thông tin đối tác, phòng ban và hóa đơn.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Integrated the system with Money Forward for invoice creation and management.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Tích hợp hệ thống với dịch vụ Money Forward để tạo và quản lý hóa đơn.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Integrated the system with Money Forward for invoice creation and management.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Tích hợp hệ thống với dịch vụ Money Forward để tạo và quản lý hóa đơn.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Developed and optimized RESTful APIs for frontend consumption.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Phát triển và tối ưu hóa hệ thống RESTful API phục vụ phía frontend.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Developed and optimized RESTful APIs for frontend consumption.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Phát triển và tối ưu hóa hệ thống RESTful API phục vụ phía frontend.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Ensured system performance and stability when handling multiple files and large datasets.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Đảm bảo hiệu năng và độ ổn định của hệ thống khi xử lý nhiều tệp tin và tập dữ liệu lớn.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Ensured system performance and stability when handling multiple files and large datasets.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Đảm bảo hiệu năng và độ ổn định của hệ thống khi xử lý nhiều tệp tin và tập dữ liệu lớn.</span>
                                 </span>
                             </div>
                             <div class="project-tech-tags">
@@ -472,8 +493,10 @@
 
                         </div>
                     </div>
+                    </div>
 
                     <!-- Project 2: Simple CRM -->
+                    <div class="project-bezel">
                     <div class="project-card glass-card">
                         <div class="project-img-wrapper">
                             <div class="project-tag">
@@ -481,12 +504,13 @@
                                 <span class="vi">Full-Stack / FastAPI</span>
                             </div>
                             <div class="project-tech-icons">
-                                <span title="FastAPI"><i class="fa-solid fa-bolt text-fastapi"></i></span>
-                                <span title="VueJS"><i class="fa-brands fa-vuejs text-vue"></i></span>
-                                <span title="MySQL"><i class="fa-solid fa-database text-mysql"></i></span>
+                                <span title="FastAPI"><img src="https://cdn.simpleicons.org/fastapi/009688" alt="FastAPI" loading="lazy" width="20" height="20"></span>
+                                <span title="VueJS"><img src="https://cdn.simpleicons.org/vuedotjs/4FC08D" alt="VueJS" loading="lazy" width="20" height="20"></span>
+                                <span title="MySQL"><img src="https://cdn.simpleicons.org/mysql/4479A1" alt="MySQL" loading="lazy" width="20" height="20"></span>
                             </div>
                             <div class="project-gradient-overlay"></div>
                             <div class="project-mockup">
+                                <i class="ph-light ph-chat-circle-text mock-icon"></i>
                                 <span class="mock-tag">&lt;Simple CRM/&gt;</span>
                             </div>
                         </div>
@@ -502,24 +526,24 @@
                             </p>
                             <div class="project-highlights">
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Developed contact form modules for customer websites.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Phát triển module biểu mẫu liên hệ (contact form) cho website khách hàng.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Developed contact form modules for customer websites.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Phát triển module biểu mẫu liên hệ (contact form) cho website khách hàng.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Built responsive UI/UX for contact forms and admin dashboard.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Xây dựng giao diện responsive cho biểu mẫu liên hệ và bảng điều khiển quản trị.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Built responsive UI/UX for contact forms and admin dashboard.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Xây dựng giao diện responsive cho biểu mẫu liên hệ và bảng điều khiển quản trị.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Designed and implemented RESTful APIs using FastAPI.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Thiết kế và triển khai RESTful API bằng FastAPI.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Designed and implemented RESTful APIs using FastAPI.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Thiết kế và triển khai RESTful API bằng FastAPI.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Implemented message management functions including search, filtering, and status handling.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Triển khai chức năng quản lý tin nhắn bao gồm tìm kiếm, lọc và xử lý trạng thái.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Implemented message management functions including search, filtering, and status handling.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Triển khai chức năng quản lý tin nhắn bao gồm tìm kiếm, lọc và xử lý trạng thái.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Participated in code reviews to maintain code quality.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Tham gia đánh giá mã nguồn (code review) để duy trì chất lượng code.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Participated in code reviews to maintain code quality.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Tham gia đánh giá mã nguồn (code review) để duy trì chất lượng code.</span>
                                 </span>
                             </div>
                             <div class="project-tech-tags">
@@ -531,8 +555,10 @@
 
                         </div>
                     </div>
+                    </div>
 
                     <!-- Project 3: Fany Story -->
+                    <div class="project-bezel">
                     <div class="project-card glass-card">
                         <div class="project-img-wrapper">
                             <div class="project-tag">
@@ -540,12 +566,13 @@
                                 <span class="vi">Full-Stack / NestJS / PDF.js</span>
                             </div>
                             <div class="project-tech-icons">
-                                <span title="VueJS"><i class="fa-brands fa-vuejs text-vue"></i></span>
-                                <span title="Laravel"><i class="fa-brands fa-laravel text-laravel"></i></span>
-                                <span title="NestJS"><i class="fa-solid fa-code text-cyan"></i></span>
+                                <span title="VueJS"><img src="https://cdn.simpleicons.org/vuedotjs/4FC08D" alt="VueJS" loading="lazy" width="20" height="20"></span>
+                                <span title="Laravel"><img src="https://cdn.simpleicons.org/laravel/FF2D20" alt="Laravel" loading="lazy" width="20" height="20"></span>
+                                <span title="NestJS"><img src="https://cdn.simpleicons.org/nestjs/E0234E" alt="NestJS" loading="lazy" width="20" height="20"></span>
                             </div>
                             <div class="project-gradient-overlay"></div>
                             <div class="project-mockup">
+                                <i class="ph-light ph-book-open-text mock-icon"></i>
                                 <span class="mock-tag">&lt;Fany Story/&gt;</span>
                             </div>
                         </div>
@@ -561,20 +588,20 @@
                             </p>
                             <div class="project-highlights">
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Built core features: users, manga, reader, chapters, master data and uploads.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Xây dựng các tính năng cốt lõi: quản lý người dùng, truyện tranh (manga), giao diện đọc, chương truyện, dữ liệu danh mục (master data) và tải lên tệp tin.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Built core features: users, manga, reader, chapters, master data and uploads.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Xây dựng các tính năng cốt lõi: quản lý người dùng, truyện tranh (manga), giao diện đọc, chương truyện, dữ liệu danh mục (master data) và tải lên tệp tin.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Converted Figma designs into responsive, accessible UIs with pixel-perfect fidelity.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Chuyển đổi bản thiết kế Figma thành giao diện responsive dễ tiếp cận với độ chính xác cao.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Converted Figma designs into responsive, accessible UIs with pixel-perfect fidelity.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Chuyển đổi bản thiết kế Figma thành giao diện responsive dễ tiếp cận với độ chính xác cao.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Used PDF.js to render admin-uploaded registration PDFs for end users.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Sử dụng thư viện PDF.js để hiển thị trực quan tài liệu hướng dẫn tác giả đăng ký (PDF) cho người dùng cuối.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Used PDF.js to render admin-uploaded registration PDFs for end users.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Sử dụng thư viện PDF.js để hiển thị trực quan tài liệu hướng dẫn tác giả đăng ký (PDF) cho người dùng cuối.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Participated in code reviews to maintain code quality.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Tham gia đánh giá mã nguồn (code review) để duy trì chất lượng code.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Participated in code reviews to maintain code quality.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Tham gia đánh giá mã nguồn (code review) để duy trì chất lượng code.</span>
                                 </span>
                             </div>
                             <div class="project-tech-tags">
@@ -589,8 +616,10 @@
 
                         </div>
                     </div>
+                    </div>
 
                     <!-- Project 4: Cleaning Shift -->
+                    <div class="project-bezel">
                     <div class="project-card glass-card">
                         <div class="project-img-wrapper">
                             <div class="project-tag">
@@ -598,12 +627,13 @@
                                 <span class="vi">Full-Stack / Hệ thống đặt chỗ</span>
                             </div>
                             <div class="project-tech-icons">
-                                <span title="Laravel"><i class="fa-brands fa-laravel text-laravel"></i></span>
-                                <span title="ReactJS"><i class="fa-brands fa-react text-react"></i></span>
-                                <span title="MySQL"><i class="fa-solid fa-database text-mysql"></i></span>
+                                <span title="Laravel"><img src="https://cdn.simpleicons.org/laravel/FF2D20" alt="Laravel" loading="lazy" width="20" height="20"></span>
+                                <span title="ReactJS"><img src="https://cdn.simpleicons.org/react/61DAFB" alt="ReactJS" loading="lazy" width="20" height="20"></span>
+                                <span title="MySQL"><img src="https://cdn.simpleicons.org/mysql/4479A1" alt="MySQL" loading="lazy" width="20" height="20"></span>
                             </div>
                             <div class="project-gradient-overlay"></div>
                             <div class="project-mockup">
+                                <i class="ph-light ph-calendar-check mock-icon"></i>
                                 <span class="mock-tag">&lt;Cleaning Shift/&gt;</span>
                             </div>
                         </div>
@@ -619,28 +649,28 @@
                             </p>
                             <div class="project-highlights">
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Developed RESTful APIs and responsive UI based on technical specifications and Figma designs.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Phát triển RESTful API và giao diện responsive dựa trên tài liệu kỹ thuật và thiết kế Figma.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Developed RESTful APIs and responsive UI based on technical specifications and Figma designs.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Phát triển RESTful API và giao diện responsive dựa trên tài liệu kỹ thuật và thiết kế Figma.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Implemented JWT-based authentication and authorization, ensuring secure user access and role-based permissions.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Triển khai xác thực và phân quyền dựa trên JWT, đảm bảo truy cập an toàn và phân quyền theo vai trò.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Implemented JWT-based authentication and authorization, ensuring secure user access and role-based permissions.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Triển khai xác thực và phân quyền dựa trên JWT, đảm bảo truy cập an toàn và phân quyền theo vai trò.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Developed customer management and campsite booking modules.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Phát triển module quản lý khách hàng và đặt chỗ khu cắm trại.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Developed customer management and campsite booking modules.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Phát triển module quản lý khách hàng và đặt chỗ khu cắm trại.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Implemented online payment integration using Stripe.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Tích hợp thanh toán trực tuyến qua Stripe.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Implemented online payment integration using Stripe.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Tích hợp thanh toán trực tuyến qua Stripe.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Developed admin dashboard for managing users and marketplace data.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Xây dựng bảng điều khiển quản trị để quản lý người dùng và dữ liệu marketplace.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Developed admin dashboard for managing users and marketplace data.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Xây dựng bảng điều khiển quản trị để quản lý người dùng và dữ liệu marketplace.</span>
                                 </span>
                                 <span>
-                                    <span class="en"><i class="fa-solid fa-circle-check"></i> Participated in code reviews to maintain code quality.</span>
-                                    <span class="vi"><i class="fa-solid fa-circle-check"></i> Tham gia đánh giá mã nguồn để duy trì chất lượng code.</span>
+                                    <span class="en"><i class="ph-light ph-check-circle"></i> Participated in code reviews to maintain code quality.</span>
+                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Tham gia đánh giá mã nguồn để duy trì chất lượng code.</span>
                                 </span>
                             </div>
                             <div class="project-tech-tags">
@@ -654,6 +684,7 @@
 
                         </div>
                     </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -663,8 +694,8 @@
             <div class="section-container">
                 <div class="section-header">
                     <h2 class="section-title">
-                        <span class="en">💼 Career Journey</span>
-                        <span class="vi">💼 Kinh nghiệm & Học vấn</span>
+                        <span class="en">Career Journey</span>
+                        <span class="vi">Kinh nghiệm & Học vấn</span>
                     </h2>
                     <div class="section-divider"></div>
                 </div>
@@ -724,7 +755,7 @@
                             <div class="timeline-details">
                                 <span class="en">
                                     <ul>
-                                        <li>Maintained and contributed to multiple onsite projects, ranging from legacy PHP systems (PHP 5.x–8.x) to modern Laravel & VueJS applications, as well as WordPress-based websites.</li>
+                                        <li>Maintained and contributed to multiple onsite projects, ranging from legacy PHP systems (PHP 5.x-8.x) to modern Laravel & VueJS applications, as well as WordPress-based websites.</li>
                                         <li>Built and customized WordPress websites, including theme and plugin development, ensuring performance optimization.</li>
                                         <li>Collaborated closely with team members to ensure system stability, code quality, and on-time delivery.</li>
                                         <li>Applied CI/CD pipelines using CircleCI to support build and deployment workflows.</li>
@@ -732,7 +763,7 @@
                                 </span>
                                 <span class="vi">
                                     <ul>
-                                        <li>Bảo trì và đóng góp vào nhiều dự án tại văn phòng khách hàng, từ hệ thống PHP cũ (PHP 5.x–8.x) đến các ứng dụng Laravel & VueJS hiện đại, cũng như các trang web nền tảng WordPress.</li>
+                                        <li>Bảo trì và đóng góp vào nhiều dự án tại văn phòng khách hàng, từ hệ thống PHP cũ (PHP 5.x-8.x) đến các ứng dụng Laravel & VueJS hiện đại, cũng như các trang web nền tảng WordPress.</li>
                                         <li>Xây dựng và tùy biến website WordPress, bao gồm lập trình giao diện (theme) và plugin, đảm bảo tối ưu hóa hiệu năng.</li>
                                         <li>Hợp tác chặt chẽ với các thành viên trong nhóm để đảm bảo sự ổn định của hệ thống, chất lượng mã nguồn và bàn giao đúng hẹn.</li>
                                         <li>Áp dụng quy trình CI/CD sử dụng CircleCI nhằm hỗ trợ các luồng đóng gói và triển khai.</li>
@@ -782,14 +813,15 @@
             <div class="section-container">
                 <div class="section-header">
                     <h2 class="section-title">
-                        <span class="en">📧 Let's Build Something Great</span>
-                        <span class="vi">📧 Cùng Xây Dựng Dự Án Lớn</span>
+                        <span class="en">Let's Build Something Great</span>
+                        <span class="vi">Cùng Xây Dựng Dự Án Lớn</span>
                     </h2>
                     <div class="section-divider"></div>
                 </div>
 
                 <div class="contact-grid">
                     <!-- Info panel -->
+                    <div class="contact-bezel">
                     <div class="contact-info-panel glass-card">
                         <h3>
                             <span class="en">Connect With Me</span>
@@ -802,7 +834,7 @@
                         
                         <div class="info-details">
                             <a href="mailto:tranhungith18@gmail.com" class="info-item">
-                                <div class="info-icon"><i class="fa-solid fa-envelope"></i></div>
+                                <div class="info-icon"><i class="ph-light ph-envelope-simple"></i></div>
                                 <div class="info-text">
                                     <span class="info-label">Email</span>
                                     <span class="info-val">tranhungith18@gmail.com</span>
@@ -810,7 +842,7 @@
                             </a>
 
                             <a href="tel:0964985882" class="info-item">
-                                <div class="info-icon"><i class="fa-solid fa-phone"></i></div>
+                                <div class="info-icon"><i class="ph-light ph-phone"></i></div>
                                 <div class="info-text">
                                     <span class="info-label">
                                         <span class="en">Phone</span>
@@ -819,9 +851,9 @@
                                     <span class="info-val">0964985882</span>
                                 </div>
                             </a>
-                            
+
                             <a href="https://github.com/tranhung18" target="_blank" class="info-item">
-                                <div class="info-icon"><i class="fa-brands fa-github"></i></div>
+                                <div class="info-icon"><i class="ph-light ph-github-logo"></i></div>
                                 <div class="info-text">
                                     <span class="info-label">GitHub</span>
                                     <span class="info-val">github.com/tranhung18</span>
@@ -829,13 +861,14 @@
                             </a>
 
                             <a href="https://www.facebook.com/tranhung18.it" target="_blank" class="info-item">
-                                <div class="info-icon"><i class="fa-brands fa-facebook"></i></div>
+                                <div class="info-icon"><i class="ph-light ph-facebook-logo"></i></div>
                                 <div class="info-text">
                                     <span class="info-label">Facebook</span>
                                     <span class="info-val">facebook.com/tranhung18.it</span>
                                 </div>
                             </a>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -845,8 +878,8 @@
     <!-- Footer -->
     <footer class="footer">
         <p>
-            <span class="en">&copy; 2026 Trần Hữu Hùng. All rights reserved. Designed with ❤️ & high performance code.</span>
-            <span class="vi">&copy; 2026 Trần Hữu Hùng. Bảo lưu mọi quyền. Thiết kế bằng ❤️ & mã nguồn tối ưu hiệu năng.</span>
+            <span class="en">&copy; 2026 Trần Hữu Hùng. All rights reserved. Built with clean, high-performance code.</span>
+            <span class="vi">&copy; 2026 Trần Hữu Hùng. Bảo lưu mọi quyền. Xây dựng với mã nguồn sạch, hiệu năng cao.</span>
         </p>
     </footer>
 

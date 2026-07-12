@@ -11,6 +11,7 @@ class SpaceParticles {
         this.width = window.innerWidth;
         this.height = window.innerHeight;
         this.particlesCount = this.width < 768 ? 400 : 1000; // Optimize for mobile
+        this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         this.mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
         this.init();
@@ -49,11 +50,11 @@ class SpaceParticles {
         canvas.height = 32;
         const ctx = canvas.getContext('2d');
 
-        // Draw radial glow gradient
+        // Draw radial glow gradient (single locked accent hue, tonal only)
         const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
         gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-        gradient.addColorStop(0.2, 'rgba(0, 242, 254, 0.8)');
-        gradient.addColorStop(0.6, 'rgba(124, 58, 237, 0.25)');
+        gradient.addColorStop(0.2, 'rgba(46, 230, 198, 0.8)');
+        gradient.addColorStop(0.6, 'rgba(20, 168, 143, 0.25)');
         gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
         ctx.fillStyle = gradient;
@@ -125,6 +126,12 @@ class SpaceParticles {
     }
 
     animate() {
+        // Reduced motion: render the field once, static, and stop the loop.
+        if (this.reducedMotion) {
+            this.renderer.render(this.scene, this.camera);
+            return;
+        }
+
         requestAnimationFrame(this.animate.bind(this));
 
         // Smooth Mouse Lerping logic for parallax

@@ -27,21 +27,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ----------------------------------------------------
-    // 2. HEADER SHADOW ON SCROLL & SCROLL PROGRESS BAR
+    // 2. HEADER "SCROLLED" STATE (IntersectionObserver, no scroll listener)
     // ----------------------------------------------------
     const header = document.querySelector('.header');
+    const scrollSentinel = document.getElementById('scroll-sentinel');
 
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 40) {
-            header.style.padding = '0.75rem 0';
-            header.style.background = 'rgba(4, 5, 10, 0.9)';
-            header.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.4)';
-        } else {
-            header.style.padding = '1.25rem 0';
-            header.style.background = 'rgba(7, 9, 19, 0.65)';
-            header.style.boxShadow = 'none';
-        }
-    }, { passive: true });
+    if (header && scrollSentinel) {
+        // Sentinel is a 40px-tall marker pinned to the very top of the document;
+        // once it scrolls out of view, the page has scrolled past the threshold.
+        const headerObserver = new IntersectionObserver(([entry]) => {
+            header.classList.toggle('scrolled', !entry.isIntersecting);
+        });
+        headerObserver.observe(scrollSentinel);
+    }
 
     // ----------------------------------------------------
     // 3. BILINGUAL SUPPORT & TYPING ENGINE INTEGRATION
@@ -58,6 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
         "Tối ưu Cơ sở Dữ liệu & CI/CD."
     ];
 
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     let currentPhrases = phrasesEn;
     let phraseIndex = 0;
     let charIndex = 0;
@@ -67,6 +67,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function typeEffect() {
         if (!typingSpan) return;
+
+        // Reduced motion: show the first phrase statically, no looping.
+        if (prefersReducedMotion) {
+            typingSpan.textContent = currentPhrases[0];
+            return;
+        }
 
         const currentPhrase = currentPhrases[phraseIndex];
         
@@ -153,18 +159,15 @@ document.addEventListener('DOMContentLoaded', () => {
     revealElements.forEach(el => revealObserver.observe(el));
 
     // ----------------------------------------------------
-    // 5. ACTIVE LINK HIGHLIGHTING (Scroll-Based — fixes tall sections)
+    // 5. ACTIVE LINK HIGHLIGHTING (IntersectionObserver scrollspy, no scroll listener)
     // ----------------------------------------------------
     const sections = document.querySelectorAll('section[id]');
+    const sectionInView = new Map();
 
     function updateActiveNav() {
-        const scrollPos = window.scrollY + window.innerHeight * 0.35;
         let currentId = '';
-
         sections.forEach(section => {
-            if (section.offsetTop <= scrollPos) {
-                currentId = section.id;
-            }
+            if (sectionInView.get(section.id)) currentId = section.id;
         });
 
         if (currentId === 'home' || !currentId) currentId = 'about';
@@ -174,7 +177,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    window.addEventListener('scroll', updateActiveNav, { passive: true });
+    const navSpyObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => sectionInView.set(entry.target.id, entry.isIntersecting));
+        updateActiveNav();
+    }, { rootMargin: '-30% 0px -65% 0px' });
+
+    sections.forEach(section => navSpyObserver.observe(section));
     updateActiveNav();
 
     // ----------------------------------------------------
@@ -214,73 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ----------------------------------------------------
-    // 7. SECURE CONTACT FORM HANDLING & VAL
-    // ----------------------------------------------------
-    const contactForm = document.getElementById('contact-form');
-    const formStatus = document.getElementById('form-status');
-
-    if (contactForm && formStatus) {
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const name = document.getElementById('form-name').value.trim();
-            const email = document.getElementById('form-email').value.trim();
-            const message = document.getElementById('form-message').value.trim();
-            const submitBtn = contactForm.querySelector('.submit-btn');
-
-            // Detect Current Translation Active State
-            const currentLang = document.body.classList.contains('lang-vi') ? 'vi' : 'en';
-
-            if (!name || !email || !message) {
-                const errorMsg = currentLang === 'vi' 
-                    ? 'Vui lòng điền đầy đủ các thông tin.' 
-                    : 'Please complete all form fields.';
-                showFormStatus(errorMsg, 'error');
-                return;
-            }
-
-            // Simulate sending message with visual loading status
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.7';
-            
-            const sendingMsg = currentLang === 'vi' ? 'Đang gửi...' : 'Sending Message...';
-            submitBtn.innerHTML = `<span>${sendingMsg}</span> <i class="fa-solid fa-spinner fa-spin"></i>`;
-
-            setTimeout(() => {
-                const successMsg = currentLang === 'vi'
-                    ? 'Cảm ơn bạn! Tin nhắn của bạn đã được gửi thành công đến Trần Hùng.'
-                    : 'Thank you! Your message has been sent successfully to Trần Hùng.';
-                
-                showFormStatus(successMsg, 'success');
-                contactForm.reset();
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = '1';
-                
-                const btnLabel = currentLang === 'vi' ? 'Gửi tin nhắn' : 'Send Message';
-                submitBtn.innerHTML = `<span>${btnLabel}</span> <i class="fa-solid fa-paper-plane"></i>`;
-            }, 1500);
-        });
-    }
-
-    function showFormStatus(message, type) {
-        formStatus.textContent = message;
-        formStatus.className = `form-status ${type}`;
-        formStatus.style.display = 'block';
-
-        // Auto fade out status after 6 seconds if successful
-        if (type === 'success') {
-            setTimeout(() => {
-                formStatus.style.opacity = '0';
-                setTimeout(() => {
-                    formStatus.style.display = 'none';
-                    formStatus.style.opacity = '1';
-                }, 400);
-            }, 6000);
-        }
-    }
-
-    // ----------------------------------------------------
-    // 8. TIMELINE SLIDE-IN ANIMATION
+    // 7. TIMELINE SLIDE-IN ANIMATION
     // ----------------------------------------------------
     const timelineItems = document.querySelectorAll('.timeline-item');
     if (timelineItems.length > 0) {
