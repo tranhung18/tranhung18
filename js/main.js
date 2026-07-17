@@ -3,6 +3,10 @@
  * Trần Hùng - Full-Stack Developer
  */
 
+// Loaded as type="module" to import the shared typing phrases from data.js;
+// the rest of V1's markup stays hardcoded as-is.
+import { typingPhrases } from '../data.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------------------------
     // 1. MOBILE MENU TOGGLE
@@ -45,16 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. BILINGUAL SUPPORT & TYPING ENGINE INTEGRATION
     // ----------------------------------------------------
     const typingSpan = document.querySelector('.typing-text');
-    const phrasesEn = [
-        "Full-Stack Web Developer.",
-        "Backend Architecture Expert.",
-        "Database & CI/CD Specialist."
-    ];
-    const phrasesVi = [
-        "Lập trình viên Full-Stack.",
-        "Chuyên gia Kiến trúc Backend.",
-        "Tối ưu Cơ sở Dữ liệu & CI/CD."
-    ];
+    const phrasesEn = typingPhrases.en;
+    const phrasesVi = typingPhrases.vi;
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
