@@ -1,0 +1,792 @@
+/* ==========================================================================
+   V2 DESIGN SYSTEM — "Bento Console". Deliberately different from V1: violet/cyan
+   bento grid + JetBrains Mono headings vs. V1's teal + Space Grotesk 2-col hero.
+   ========================================================================== */
+:root {
+    --bg: #0a0e14;
+    --bg-alt: #0d1320;
+    --surface: rgba(148, 163, 184, 0.045);
+    --surface-hover: rgba(148, 163, 184, 0.09);
+    --border: rgba(148, 163, 184, 0.14);
+    --border-hover: rgba(148, 163, 184, 0.32);
+
+    --text: #e6e9ef;
+    --text-secondary: #93a1b5;
+    /* Lightened from #5b6577 (~3.3:1, fails WCAG AA) to ~5.25:1, still dimmer than --text-secondary. */
+    --text-muted: #7b8698;
+
+    --primary: #7c5cff;
+    --primary-2: #38bdf8;
+    --accent: #ffb454;
+    --accent-rgb: 124, 92, 255;
+    /* Solid AA-checked fill (~5.6:1 w/ white text) for buttons/active pills - --grad-primary's cyan stop only gives ~2.1:1. */
+    --fill-solid: #6a45f0;
+    --grad-primary: linear-gradient(135deg, #7c5cff 0%, #38bdf8 100%);
+    --grad-warm: linear-gradient(135deg, #ffb454 0%, #ff7a7a 100%);
+
+    --shadow-elev: 0 24px 48px -18px rgba(2, 4, 8, 0.65);
+    --shadow-glow: 0 0 28px rgba(124, 92, 255, 0.28);
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --transition: all 0.35s var(--ease);
+
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+
+    --dock-h: 64px;
+    --radius: 20px;
+    --radius-sm: 12px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; font-size: 16px; background: var(--bg); }
+
+body.v2-body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+        radial-gradient(circle at 15% 8%, rgba(124, 92, 255, 0.10) 0%, transparent 45%),
+        radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.08) 0%, transparent 45%);
+    background-attachment: fixed;
+}
+
+h1, h2, h3, h4 { font-family: var(--font-mono); font-weight: 600; letter-spacing: -0.01em; }
+p { color: var(--text-secondary); }
+a { color: inherit; }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-alt); }
+::-webkit-scrollbar-thumb { background: rgba(124, 92, 255, 0.35); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(124, 92, 255, 0.6); }
+
+/* Focus & a11y ------------------------------------------------------------ */
+:focus-visible {
+    outline: 2px solid var(--primary-2);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--fill-solid);
+    color: #fff;
+    padding: 0.75rem 1.25rem;
+    z-index: 1000;
+    border-radius: 0 0 8px 0;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+.skip-link:focus {
+    left: 0;
+}
+
+/* Animated gradient shine (own implementation, inspired by animista.net/reactbits.dev
+   patterns) - background-position sweep, pure CSS, no JS. */
+.gradient-text {
+    background: linear-gradient(110deg, var(--primary) 30%, #fff 50%, var(--primary-2) 70%);
+    background-size: 220% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShine 6s linear infinite;
+}
+@keyframes gradientShine {
+    to { background-position: -220% center; }
+}
+
+/* ==========================================================================
+   SNAKE BACKGROUND (js/v2-snake-bg.js) - fixed full-viewport layer. Was
+   z-index:-1 (invisible: body's own background painted over it); fixed to
+   z-index:0 + explicit z-index:1 promotion on #main-content/.v2-footer below.
+   ========================================================================== */
+.snake-bg-wrap {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+.snake-bg-wrap canvas { display: block; width: 100%; height: 100%; }
+
+/* ==========================================================================
+   DOCK NAV — sticky top bar (not V1's floating pill)
+   ========================================================================== */
+.dock {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    height: var(--dock-h);
+    background: rgba(10, 14, 20, 0.72);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+}
+
+.dock-inner {
+    max-width: 1360px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.dock-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+}
+
+.dock-dots { display: flex; gap: 5px; }
+.dock-dots i {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--text-muted);
+    display: block;
+}
+.dock-dots i:nth-child(1) { background: #ff5f57; }
+.dock-dots i:nth-child(2) { background: #febc2e; }
+.dock-dots i:nth-child(3) { background: #28c840; }
+
+.dock-caret {
+    color: var(--primary-2);
+    animation: caretBlink 1.1s steps(1) infinite;
+}
+@keyframes caretBlink { 50% { opacity: 0; } }
+
+.dock-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+    flex: 1;
+    justify-content: center;
+}
+
+.dock-link {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 0.35rem 0.15rem;
+    transition: var(--transition);
+    position: relative;
+}
+.dock-link:hover, .dock-link.active { color: var(--primary-2); }
+.dock-link.active::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -6px;
+    height: 2px;
+    background: var(--grad-primary);
+    border-radius: 2px;
+}
+
+.dock-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-shrink: 0;
+}
+
+/* Reuse-styled version/lang switch (same components as V1, restyled) */
+.dock-controls .version-switch-wrapper,
+.dock-controls .lang-switch-wrapper {
+    margin-left: 0;
+}
+.dock-controls .version-switch,
+.dock-controls .lang-switch {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.7rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+.dock-controls .version-btn,
+.dock-controls .lang-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+    transition: var(--transition);
+}
+.dock-controls .version-btn.active,
+.dock-controls .version-btn:hover,
+.dock-controls .lang-btn.active,
+.dock-controls .lang-btn:hover {
+    color: var(--primary-2);
+}
+.dock-controls .version-separator,
+.dock-controls .lang-separator {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+.dock-menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+    padding: 4px;
+}
+.dock-menu-toggle .bar {
+    width: 22px; height: 2px;
+    background: var(--text);
+    transition: var(--transition);
+}
+.dock-menu-toggle.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.dock-menu-toggle.active .bar:nth-child(2) { opacity: 0; }
+.dock-menu-toggle.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Language display toggle - same pattern as V1 */
+body.lang-en .vi { display: none !important; }
+body.lang-vi .en { display: none !important; }
+
+/* Explicit stacking promotion so content paints above .snake-bg-wrap (z-index:0). */
+#main-content, .v2-footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* ==========================================================================
+   SECTION SHELL
+   ========================================================================== */
+.v2-section {
+    padding: 5rem 0;
+    position: relative;
+}
+.section-shell {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.v2-section-title {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    font-size: 1.9rem;
+    margin-bottom: 2rem;
+}
+.title-index {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--primary-2);
+    opacity: 0.8;
+}
+
+/* ==========================================================================
+   BENTO GRID SYSTEM
+   ========================================================================== */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: minmax(120px, auto);
+    gap: 1rem;
+}
+
+.bento-tile {
+    /* Set by initTiltTiles() (v2.js); stay at 0 (no-op) elsewhere. */
+    --tilt-x: 0deg;
+    --tilt-y: 0deg;
+    --tilt-lift: 0px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition);
+    transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(var(--tilt-lift));
+    transform-style: preserve-3d;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.bento-tile:hover, .bento-tile:focus-within {
+    border-color: var(--border-hover);
+    background: var(--surface-hover);
+    box-shadow: var(--shadow-elev);
+}
+
+.bento-tile--accent {
+    background: linear-gradient(160deg, rgba(124, 92, 255, 0.16) 0%, rgba(56, 189, 248, 0.06) 100%);
+    border-color: rgba(124, 92, 255, 0.28);
+}
+
+/* Column span utilities */
+.c-3 { grid-column: span 3; }
+.c-4 { grid-column: span 4; }
+.c-5 { grid-column: span 5; }
+.c-6 { grid-column: span 6; }
+.c-7 { grid-column: span 7; }
+.c-8 { grid-column: span 8; }
+.c-9 { grid-column: span 9; }
+.c-12 { grid-column: span 12; }
+/* Row span utilities */
+.r-1 { grid-row: span 1; }
+.r-2 { grid-row: span 2; }
+
+.bento-skeleton {
+    grid-column: span 12;
+    height: 420px;
+    border-radius: var(--radius);
+    background: linear-gradient(90deg, var(--surface) 0%, var(--surface-hover) 50%, var(--surface) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+}
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.tile-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   HERO BENTO
+   ========================================================================== */
+.hero-bento-section { padding-top: 3rem; }
+
+.hero-tile-intro {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+}
+.hero-badge-v2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--primary-2);
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    padding: 0.4rem 0.9rem;
+    border-radius: 50px;
+}
+.pulse-dot-v2 {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #38f593;
+    box-shadow: 0 0 0 0 rgba(56, 245, 147, 0.6);
+    animation: pulseDotV2 2s infinite;
+}
+@keyframes pulseDotV2 {
+    0% { box-shadow: 0 0 0 0 rgba(56, 245, 147, 0.55); }
+    70% { box-shadow: 0 0 0 8px rgba(56, 245, 147, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(56, 245, 147, 0); }
+}
+.hero-title-v2 {
+    font-size: clamp(2rem, 4vw, 3.1rem);
+    line-height: 1.15;
+}
+.hero-role-v2 {
+    font-family: var(--font-mono);
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+}
+.hero-cta-row { display: flex; gap: 0.85rem; flex-wrap: wrap; margin-top: 0.5rem; }
+.btn-v2 {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 0.75rem 1.4rem;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: var(--transition);
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+/* Cursor-follow spotlight glow (own implementation, reactbits.dev-style pattern) -
+   initSpotlightButtons() (v2.js) sets --spot-x/--spot-y on pointermove. */
+.btn-v2::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(255, 255, 255, 0.35), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s var(--ease);
+    pointer-events: none;
+}
+.btn-v2:hover::before, .btn-v2:focus-visible::before { opacity: 1; }
+.btn-v2-primary { background: var(--fill-solid); color: #fff; }
+.btn-v2-primary:hover { box-shadow: var(--shadow-glow); transform: translateY(-2px); }
+.btn-v2-ghost { border-color: var(--border); color: var(--text); }
+.btn-v2-ghost:hover { border-color: var(--border-hover); background: var(--surface-hover); }
+.btn-v2-ghost::before { background: radial-gradient(120px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(124, 92, 255, 0.18), transparent 70%); }
+
+.hero-tile-3d {
+    position: relative;
+    min-height: 260px;
+}
+.hero-3d-canvas-wrap {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+.hero-3d-canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+.hero-3d-fallback {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(135deg, rgba(124, 92, 255, 0.22), rgba(56, 189, 248, 0.14)),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 14px);
+}
+
+.hero-tile-stats { display: flex; align-items: center; justify-content: space-around; text-align: center; }
+.hero-stat-num { font-family: var(--font-mono); font-size: 1.6rem; color: var(--primary-2); display: block; }
+.hero-stat-label { font-size: 0.72rem; color: var(--text-muted); }
+
+.hero-tile-tech { display: flex; flex-direction: column; gap: 0.85rem; }
+.hero-tech-icons { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.hero-tech-icons img { width: 22px; height: 22px; opacity: 0.85; }
+
+.hero-tile-project { justify-content: space-between; }
+.hero-project-name { font-size: 1.15rem; }
+.hero-project-link { font-family: var(--font-mono); font-size: 0.8rem; color: var(--primary-2); text-decoration: none; }
+
+.hero-tile-contact { display: flex; flex-direction: column; gap: 0.5rem; justify-content: center; }
+.hero-tile-contact a { text-decoration: none; color: var(--text); font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; }
+.hero-tile-contact a:hover { color: var(--primary-2); }
+
+/* ==========================================================================
+   ABOUT BENTO
+   ========================================================================== */
+.about-tile-text h3 { font-size: 1.35rem; margin-bottom: 0.75rem; color: var(--text); }
+.about-tile-text p { margin-bottom: 0.85rem; font-size: 0.98rem; }
+.about-tile-text p:last-child { margin-bottom: 0; }
+
+.strength-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; align-content: flex-start; }
+.strength-chip {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.85rem;
+    border-radius: 50px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-secondary);
+    transition: var(--transition);
+}
+.strength-chip i { color: var(--primary-2); }
+/* Lift + scale + glow shadow, not just a color swap. */
+.strength-chip:hover {
+    transform: translateY(-1px) scale(1.05);
+    border-color: rgba(56, 189, 248, 0.45);
+    background: var(--surface-hover);
+    color: var(--text);
+    box-shadow: 0 10px 22px -10px rgba(56, 189, 248, 0.4);
+}
+
+.about-tile-avatar {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: var(--grad-primary);
+}
+/* Subtler than the default 0.6 - avatar tile's own gradient fill is already bold. */
+.about-tile-avatar .tile-3d-backdrop { opacity: 0.35; }
+.avatar-mark, .about-tile-avatar p {
+    position: relative;
+    z-index: 1;
+}
+.avatar-mark {
+    font-family: var(--font-mono);
+    font-size: 3rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.92);
+}
+
+/* ==========================================================================
+   SKILLS
+   ========================================================================== */
+.skill-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+}
+.skill-filter-btn {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.skill-filter-btn.active {
+    color: #fff;
+    background: var(--fill-solid);
+    border-color: transparent;
+}
+/* Split from .active so hovering an already-active filter still reacts. */
+.skill-filter-btn:hover {
+    color: #fff;
+    background: var(--fill-solid);
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px -10px rgba(124, 92, 255, 0.5);
+}
+
+.skill-tile {
+    gap: 0.5rem;
+    /* Overridden inline per-tile by skillBrandRgb() in v2.js; this is just the fallback. */
+    --brand-rgb: 124, 92, 255;
+}
+.skill-tile-icon img, .skill-tile-icon i { width: 26px; height: 26px; font-size: 26px; color: var(--primary-2); transition: var(--transition); }
+.skill-tile h4 { font-size: 1rem; color: var(--text); }
+.skill-tile p { font-size: 0.82rem; margin: 0; }
+
+.skill-tile.is-hidden { display: none; }
+
+/* Brand-color hover glow, ported from V1's .skill-card - here driven by one
+   inline --brand-rgb per tile (skillBrandRgb() in v2.js) instead of a root-var table. */
+.skill-tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(var(--brand-rgb), 0.16) 0%, transparent 60%);
+    opacity: 0;
+    transition: var(--transition);
+    pointer-events: none;
+}
+.skill-tile:hover {
+    border-color: rgba(var(--brand-rgb), 0.4);
+    box-shadow: 0 10px 30px -10px rgba(var(--brand-rgb), 0.4);
+}
+.skill-tile:hover::before { opacity: 1; }
+.skill-tile:hover .skill-tile-icon img,
+.skill-tile:hover .skill-tile-icon i {
+    transform: scale(1.12) translateY(-2px);
+}
+.skill-tile:hover .skill-tile-icon i { color: rgb(var(--brand-rgb)); }
+
+/* ==========================================================================
+   PROJECTS
+   ========================================================================== */
+.project-tile { gap: 0.85rem; }
+.project-tile-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
+.project-tag-v2 {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    background: rgba(255, 180, 84, 0.1);
+    border: 1px solid rgba(255, 180, 84, 0.25);
+    padding: 0.25rem 0.65rem;
+    border-radius: 50px;
+}
+.project-tile-icons { display: flex; gap: 0.4rem; }
+.project-tile-icons img { width: 18px; height: 18px; }
+.project-tile h3 { font-size: 1.2rem; color: var(--text); }
+.project-tile .project-subtitle-v2 { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); }
+.project-tile p.project-desc-v2 { font-size: 0.92rem; }
+
+.project-highlights-v2 { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.85rem; color: var(--text-secondary); }
+.project-highlights-v2 li { display: flex; gap: 0.5rem; align-items: flex-start; }
+.project-highlights-v2 i { color: var(--primary-2); margin-top: 0.2rem; flex-shrink: 0; }
+
+.project-tags-v2 { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: auto; }
+.project-tag-chip { font-family: var(--font-mono); font-size: 0.72rem; background: var(--surface); border: 1px solid var(--border); padding: 0.25rem 0.6rem; border-radius: 6px; color: var(--text-secondary); transition: var(--transition); }
+.project-tag-chip:hover {
+    transform: translateY(-1px) scale(1.05);
+    border-color: rgba(124, 92, 255, 0.45);
+    background: var(--surface-hover);
+    color: var(--text);
+    box-shadow: 0 8px 18px -8px rgba(124, 92, 255, 0.35);
+}
+
+.project-tile--featured { background: linear-gradient(160deg, rgba(124, 92, 255, 0.14), rgba(56, 189, 248, 0.05)); border-color: rgba(124, 92, 255, 0.25); }
+
+/* ==========================================================================
+   EXPERIENCE — vertical stacked cards (not V1's left/right timeline)
+   ========================================================================== */
+.exp-stack { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+.exp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--primary);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem 1.75rem;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 1.25rem;
+    transition: var(--transition);
+}
+.exp-card:hover { background: var(--surface-hover); border-left-color: var(--primary-2); }
+.exp-card-date { font-family: var(--font-mono); font-size: 0.8rem; color: var(--primary-2); }
+.exp-card-role { font-size: 1.1rem; color: var(--text); margin-bottom: 0.15rem; }
+.exp-card-company { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem; }
+.exp-card-details { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.9rem; color: var(--text-secondary); }
+.exp-card-details li::before { content: '▸ '; color: var(--primary-2); }
+
+/* ==========================================================================
+   CONTACT
+   ========================================================================== */
+.contact-tile-lead { justify-content: center; }
+.contact-tile-lead h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+/* Ambient particle backdrop (js/v2-three-scene.js), lazy-loaded by initContact3D(). */
+.tile-3d-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.6;
+    pointer-events: none;
+}
+.tile-3d-backdrop canvas { display: block; width: 100%; height: 100%; }
+.tile-3d-backdrop-fallback {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 28% 25%, rgba(124, 92, 255, 0.2), transparent 60%),
+        radial-gradient(circle at 76% 68%, rgba(56, 189, 248, 0.15), transparent 55%);
+}
+.contact-lead-content { position: relative; z-index: 1; }
+.contact-item-tile { justify-content: center; }
+.contact-item-tile a { text-decoration: none; display: flex; align-items: center; gap: 0.75rem; color: var(--text); }
+.contact-item-tile a:hover { color: var(--primary-2); }
+.contact-item-tile .info-icon-v2 { font-size: 1.4rem; color: var(--primary-2); display: inline-block; transition: var(--transition); }
+.contact-item-tile .info-label-v2 { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); display: block; }
+/* Beyond the link's own color-swap: cyan glow on the tile + lift the icon. */
+.contact-item-tile:hover {
+    border-color: rgba(56, 189, 248, 0.45);
+    box-shadow: 0 10px 26px -10px rgba(56, 189, 248, 0.4);
+}
+.contact-item-tile:hover .info-icon-v2 {
+    transform: scale(1.18) translateY(-2px);
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.v2-footer {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+}
+
+/* ==========================================================================
+   SCROLL REVEAL (populated dynamically, animated via IntersectionObserver)
+   ========================================================================== */
+.reveal-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+}
+.reveal-up.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Second entrance variant (Animista "scale-up-center"), same observer as .reveal-up. */
+.reveal-scale {
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+}
+.reveal-scale.is-visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ==========================================================================
+   REDUCED MOTION
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .pulse-dot-v2, .dock-caret, .gradient-text { animation: none; }
+    .bento-tile, .btn-v2, .skill-filter-btn, .exp-card, .dock-link, .reveal-up, .reveal-scale,
+    .skill-tile, .skill-tile::before, .skill-tile-icon img, .skill-tile-icon i,
+    .strength-chip, .project-tag-chip, .contact-item-tile, .info-icon-v2 {
+        transition: none;
+    }
+    .reveal-up, .reveal-scale { opacity: 1; transform: none; }
+    .bento-skeleton { animation: none; }
+}
+
+/* ==========================================================================
+   RESPONSIVE — 1920px down to 375px
+   ========================================================================== */
+@media screen and (max-width: 1100px) {
+    .dock-nav { display: none; }
+    .dock-menu-toggle { display: flex; }
+
+    .dock-nav.mobile-open {
+        display: flex;
+        position: fixed;
+        inset: var(--dock-h) 0 0 0;
+        background: rgba(8, 10, 15, 0.97);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 1.5rem;
+        padding: 2.5rem 2rem;
+        z-index: 199;
+    }
+    .dock-nav.mobile-open .dock-link { font-size: 1.3rem; }
+
+    .hero-bento .c-8, .hero-bento .c-4, .hero-bento .c-6, .hero-bento .c-3,
+    .about-bento .c-8, .about-bento .c-4,
+    .projects-bento .c-8, .projects-bento .c-4 {
+        grid-column: span 12;
+    }
+    .exp-card { grid-template-columns: 1fr; }
+}
+
+@media screen and (max-width: 900px) {
+    .bento-grid { grid-template-columns: repeat(6, 1fr); }
+    .c-3 { grid-column: span 3; }
+    .c-4, .c-5, .c-6, .c-7, .c-8, .c-9, .c-12 { grid-column: span 6; }
+}
+
+@media screen and (max-width: 640px) {
+    .v2-section { padding: 3rem 0; }
+    .bento-grid { grid-template-columns: 1fr; gap: 0.85rem; }
+    .c-3, .c-4, .c-5, .c-6, .c-7, .c-8, .c-9, .c-12 { grid-column: span 1; }
+    .r-2 { grid-row: span 1; }
+    .bento-tile { padding: 1.35rem; }
+    .exp-card { padding: 1.15rem 1.25rem; }
+    .v2-section-title { font-size: 1.5rem; }
+    .dock-inner { padding: 0 1rem; }
+}

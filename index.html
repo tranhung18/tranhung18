@@ -3,893 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trần Hữu Hùng | Middle Full-stack Developer Portfolio</title>
+    <title>Trần Hữu Hùng | Portfolio V2 - Bento Console</title>
 
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="Trần Hữu Hùng - Middle Full-stack Developer. 3+ years of experience building modern frontends & backend systems (Laravel, React, Vue, FastAPI, NestJs). Graduate of Hanoi University of Mining and Geology.">
-    <meta name="keywords" content="Trần Hữu Hùng, Trần Hùng, Full-stack Developer, Web Developer Portfolio, Laravel, React, Vue, NestJs, FastAPI, Ant Design, PostgreSQL, Hanoi University of Mining and Geology">
+    <!-- Anti-FOUC version redirect: reads the persisted "portfolio-version"
+         preference and redirects before paint if it disagrees. V2 is the
+         default homepage (this file, index.html); V1 lives at v1.html. -->
+    <script>
+    (function () {
+        try {
+            var saved = localStorage.getItem('portfolio-version');
+            var isV1 = location.pathname.endsWith('v1.html');
+            if (saved === 'v1' && !isV1) {
+                location.replace('v1.html');
+            } else if (saved === 'v2' && isV1) {
+                location.replace('index.html');
+            }
+        } catch (e) { /* localStorage unavailable - stay on current page */ }
+    })();
+    </script>
+
+    <meta name="description" content="Trần Hữu Hùng - Middle Full-stack Developer. Bento-grid console layout portfolio (V2). Laravel, VueJS, FastAPI, React, MySQL, PostgreSQL.">
     <meta name="author" content="Trần Hữu Hùng">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Trần Hữu Hùng | Middle Full-stack Developer Portfolio">
-    <meta property="og:description" content="3+ years building web applications with PHP, Laravel, NestJs, VueJS, and React.">
-    <meta property="og:image" content="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Trần%20Hữu%20Hùng&fontSize=60&fontColor=fff">
-    
-    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 
-    <!-- Self-hosted Fonts (Space Grotesk, Plus Jakarta Sans, JetBrains Mono) -->
+    <!-- Self-hosted fonts, reused from V1 -->
     <link rel="stylesheet" href="css/fonts.css">
-
-    <!-- Phosphor Icons (light weight, UI glyphs) -->
+    <!-- Phosphor Icons -->
     <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/light/style.css">
 
-    <!-- Core Stylesheet -->
-    <link rel="stylesheet" href="css/style.css">
+    <!-- V2-only stylesheet - completely separate design system from V1 -->
+    <link rel="stylesheet" href="v2.css">
+
+    <!-- Pinned Three.js ESM build; costs nothing until a scene actually imports it. -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+        }
+    }
+    </script>
 </head>
-<body class="lang-en">
-    <!-- Sentinel: marks the top 40px of the page, watched by IntersectionObserver
-         to toggle the header's "scrolled" state without a scroll listener -->
-    <div id="scroll-sentinel" aria-hidden="true"></div>
+<body class="lang-en v2-body" data-version="v2">
+    <a class="skip-link" href="#main-content">Skip to content</a>
 
-    <!-- ThreeJS 3D Canvas Background -->
-    <div id="canvas-container"></div>
+    <!-- Full-page ambient "tech snake" background (js/v2-snake-bg.js). Decorative
+         only, hence aria-hidden; no-ops on reduced-motion/mobile. -->
+    <div class="snake-bg-wrap" id="snake-bg-wrap" aria-hidden="true"></div>
 
-    <!-- Ambient Background Orbs -->
-    <div class="bg-orb bg-orb-1"></div>
-    <div class="bg-orb bg-orb-2"></div>
-    <div class="bg-orb bg-orb-3"></div>
-
-    <!-- Floating Navigation Bar -->
-    <header class="header">
-        <div class="header-container">
-            <a href="#" class="logo" id="logo-click">
-                <span class="bracket">&lt;</span>Hùng<span class="accent">.Dev</span><span class="bracket">/&gt;</span>
+    <!-- Dock-style top nav (deliberately not V1's floating pill navbar) -->
+    <header class="dock" id="dock">
+        <div class="dock-inner">
+            <a href="#hero" class="dock-brand" aria-label="Trần Hữu Hùng - home">
+                <span class="dock-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="dock-path">~/hung<span class="dock-caret">_</span></span>
             </a>
-            
-            <nav class="nav-links">
-                <a href="#about" class="nav-link active">
-                    <span class="en">About</span>
-                    <span class="vi">Giới thiệu</span>
-                </a>
-                <a href="#skills" class="nav-link">
-                    <span class="en">Skills</span>
-                    <span class="vi">Kỹ năng</span>
-                </a>
-                <a href="#projects" class="nav-link">
-                    <span class="en">Projects</span>
-                    <span class="vi">Dự án</span>
-                </a>
-                <a href="#experience" class="nav-link">
-                    <span class="en">Experience</span>
-                    <span class="vi">Kinh nghiệm</span>
-                </a>
-                <a href="#contact" class="nav-link nav-btn">
-                    <span class="en">Let's Connect</span>
-                    <span class="vi">Liên hệ</span>
-                </a>
+
+            <nav class="dock-nav" id="dock-nav" aria-label="Primary">
+                <!-- Populated by v2.js from data.nav -->
             </nav>
 
-            <div class="lang-switch-wrapper">
-                <div class="lang-switch">
-                    <button class="lang-btn active" data-lang="en">EN</button>
-                    <span class="lang-separator">/</span>
-                    <button class="lang-btn" data-lang="vi">VI</button>
+            <div class="dock-controls">
+                <div class="version-switch-wrapper">
+                    <div class="version-switch" role="group" aria-label="Switch portfolio layout version">
+                        <button class="version-btn" data-version-btn="v1" aria-pressed="false" aria-label="Version 1">V1</button>
+                        <span class="version-separator">/</span>
+                        <button class="version-btn active" data-version-btn="v2" aria-pressed="true" aria-label="Version 2">V2</button>
+                    </div>
                 </div>
+                <div class="lang-switch-wrapper">
+                    <div class="lang-switch" role="group" aria-label="Switch language">
+                        <button class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+                        <span class="lang-separator">/</span>
+                        <button class="lang-btn" data-lang="vi" aria-pressed="false">VI</button>
+                    </div>
+                </div>
+                <button class="dock-menu-toggle" id="dock-menu-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="dock-nav">
+                    <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                </button>
             </div>
-
-            <button class="mobile-nav-toggle" aria-label="Toggle navigation">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </button>
         </div>
     </header>
 
-    <main>
-        <!-- Hero Section -->
-        <section id="home" class="hero-section">
-            <div class="hero-spotlight"></div>
-            <div class="hero-grid">
-                <div class="hero-content">
-                    <div class="hero-badge fade-in">
-                        <span class="pulse-dot"></span>
-                        <span class="en">Available for Full-Stack Opportunities</span>
-                        <span class="vi">Sẵn sàng cho cơ hội Full-Stack</span>
-                    </div>
-                    <h1 class="hero-title fade-in">
-                        <span class="en">Hi, I'm <span class="gradient-text">Trần Hữu Hùng</span></span>
-                        <span class="vi">Xin chào,<br>Tôi là <span class="gradient-text">Trần Hữu Hùng</span></span>
-                    </h1>
-                    <h2 class="hero-subtitle fade-in">
-                        <span class="en">I am a </span>
-                        <span class="vi">Tôi là </span>
-                        <span class="typing-text"></span><span class="cursor">|</span>
-                    </h2>
-                    <div class="hero-actions fade-in">
-                        <a href="#projects" class="btn btn-primary">
-                            <span class="en">Explore My Work</span>
-                            <span class="vi">Khám phá dự án</span>
-                        </a>
-                        <a href="#contact" class="btn btn-secondary">
-                            <span class="en">Get In Touch</span>
-                            <span class="vi">Liên hệ ngay</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- TODO: replace with a real professional photo (see plan's "Content dependencies").
-                     Placeholder is an intentional monogram mark, not a fake screenshot. -->
-                <div class="hero-visual fade-in">
-                    <div class="hero-visual-bezel">
-                        <div class="hero-visual-core">
-                            <span class="hero-monogram">HH</span>
-                            <i class="ph-light ph-user-circle hero-visual-icon"></i>
-                        </div>
-                    </div>
+    <main id="main-content">
+        <!-- ============ HERO — BENTO GRID ============ -->
+        <section id="hero" class="v2-section hero-bento-section" aria-label="Introduction">
+            <div class="section-shell">
+                <div class="bento-grid hero-bento" id="hero-bento" aria-busy="true">
+                    <!-- Populated by v2.js: intro tile + 3D tile -->
+                    <div class="bento-skeleton" aria-hidden="true"></div>
                 </div>
             </div>
         </section>
 
-        <!-- About Me Section -->
-        <section id="about" class="about-section scroll-reveal">
-            <div class="section-container">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span class="en">About Me</span>
-                        <span class="vi">Giới thiệu</span>
-                    </h2>
-                    <div class="section-divider"></div>
-                </div>
-                
-                <div class="about-grid">
-                    <!-- Stat Card / Graphic -->
-                    <div class="about-visual">
-                        <div class="profile-bezel">
-                        <div class="glass-card profile-card">
-                            <div class="profile-glow"></div>
-                            <!-- TODO: swap for a real photo - <img class="profile-avatar" src="assets/profile.jpg" alt="Trần Hữu Hùng"> -->
-                            <div class="profile-avatar">
-                                <i class="ph-light ph-terminal"></i>
-                            </div>
-                            <h3 class="profile-name">Trần Hữu Hùng</h3>
-                            <p class="profile-role">
-                                <span class="en">Middle Full-stack Developer</span>
-                                <span class="vi">Nhà phát triển Full-stack</span>
-                            </p>
-                            <div class="profile-stats">
-                                <div class="stat-item">
-                                    <span class="stat-number">3+</span>
-                                    <span class="stat-label">
-                                        <span class="en">Years Exp</span>
-                                        <span class="vi">Năm kinh nghiệm</span>
-                                    </span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-number">4+ Major</span>
-                                    <span class="stat-label">
-                                        <span class="en">Core Projects</span>
-                                        <span class="vi">Dự án chính</span>
-                                    </span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-number">GPA 3.14</span>
-                                    <span class="stat-label">
-                                        <span class="en">Software Eng</span>
-                                        <span class="vi">Kỹ thuật Phần mềm</span>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-
-                    <!-- Personal Statement -->
-                    <div class="about-text">
-                        <h3>
-                            <span class="en">Delivering scalable backend structures & responsive frontend experiences</span>
-                            <span class="vi">Xây dựng cấu trúc backend mở rộng & giao diện frontend tối ưu trải nghiệm</span>
-                        </h3>
-                        <p>
-                            <span class="en">As a dedicated **Middle Full-stack Developer** with **3+ years of hands-on experience**, I build robust full-stack software products that solve real business problems. With strong software engineering foundations from Hanoi University of Mining and Geology, my architectural approach prioritizes data efficiency, code maintainability, and clean UI/UX translation.</span>
-                            <span class="vi">Là một lập trình viên **Full-stack Middle** nhiệt huyết với hơn **3 năm kinh nghiệm thực chiến**, tôi chuyên kiến tạo các sản phẩm phần mềm ổn định giúp giải quyết bài toán kinh doanh. Nhờ nền tảng kỹ thuật phần mềm vững chắc từ Đại học Mỏ - Địa chất Hà Nội, tôi luôn ưu tiên hiệu năng dữ liệu, mã nguồn dễ bảo trì và trải nghiệm UI/UX mượt mà.</span>
-                        </p>
-                        <p>
-                            <span class="en">I actively incorporate **AI-assisted development tools** (Claude Code, Cursor, Antigravity, Codex) into my workflow to accelerate delivery speeds, perform deep code reviews, and guarantee continuous quality optimization. My goal is to build long-term value, aiming for **Senior Full-Stack** engineering leadership.</span>
-                            <span class="vi">Tôi chủ động ứng dụng các **công cụ phát triển hỗ trợ bởi AI** (Claude Code, Cursor, Antigravity, Codex) vào quy trình làm việc nhằm đẩy nhanh tốc độ bàn giao, kiểm duyệt code chuyên sâu và đảm bảo chất lượng liên tục. Mục tiêu của tôi là kiến tạo giá trị dài hạn, định hướng trở thành **Senior Full-Stack** Developer.</span>
-                        </p>
-                        
-                        <div class="key-strengths">
-                            <div class="strength-tag"><i class="ph-light ph-lightning"></i> RESTful APIs</div>
-                            <div class="strength-tag">
-                                <i class="ph-light ph-database"></i>
-                                <span class="en">Relational Databases</span>
-                                <span class="vi">Cơ sở dữ liệu quan hệ</span>
-                            </div>
-                            <div class="strength-tag">
-                                <i class="ph-light ph-device-mobile"></i>
-                                <span class="en">Figma to UI Fidelity</span>
-                                <span class="vi">Chuyển đổi Figma chuẩn</span>
-                            </div>
-                            <div class="strength-tag">
-                                <i class="ph-light ph-brain"></i>
-                                <span class="en">AI-Assisted Efficiency</span>
-                                <span class="vi">Hiệu suất tối ưu bằng AI</span>
-                            </div>
-                            <div class="strength-tag">
-                                <i class="ph-light ph-arrows-clockwise"></i>
-                                <span class="en">CI/CD Pipelines & Automation</span>
-                                <span class="vi">Quy trình CI/CD tự động</span>
-                            </div>
-                            <div class="strength-tag">
-                                <i class="ph-light ph-trend-up"></i>
-                                <span class="en">Continuous Growth to Senior</span>
-                                <span class="vi">Định hướng Senior dài hạn</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- ============ ABOUT ============ -->
+        <section id="about" class="v2-section" aria-label="About">
+            <div class="section-shell">
+                <h2 class="v2-section-title reveal-scale"><span class="title-index"></span><span class="en">About</span><span class="vi">Giới thiệu</span></h2>
+                <div class="bento-grid about-bento" id="about-bento" aria-busy="true"></div>
             </div>
         </section>
 
-        <!-- Tech Stack Section -->
-        <section id="skills" class="skills-section scroll-reveal">
-            <div class="section-container">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span class="en">Tech Stack</span>
-                        <span class="vi">Công nghệ sử dụng</span>
-                    </h2>
-                    <div class="section-divider"></div>
-                </div>
-
-                <div class="skills-filter">
-                    <button class="filter-btn active" data-filter="all">
-                        <span class="en">All Tech</span>
-                        <span class="vi">Tất cả</span>
-                    </button>
-                    <button class="filter-btn" data-filter="languages">
-                        <span class="en">Languages</span>
-                        <span class="vi">Ngôn ngữ</span>
-                    </button>
-                    <button class="filter-btn" data-filter="frameworks">
-                        <span class="en">Frameworks & Platforms</span>
-                        <span class="vi">Framework & Nền tảng</span>
-                    </button>
-                    <button class="filter-btn" data-filter="databases">
-                        <span class="en">Databases & UI</span>
-                        <span class="vi">Cơ sở dữ liệu & UI</span>
-                    </button>
-                    <button class="filter-btn" data-filter="devops">
-                        <span class="en">DevOps & AI</span>
-                        <span class="vi">DevOps & AI</span>
-                    </button>
-                </div>
-
-                <div class="skills-grid">
-                    <!-- Languages -->
-                    <div class="skill-card glass-card" data-category="languages" data-color="html">
-                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/html5/E34F26" alt="HTML5" class="brand-icon" loading="lazy" width="28" height="28"></div>
-                        <h4 class="skill-name">HTML5</h4>
-                        <p class="skill-desc">
-                            <span class="en">Semantic layouts and search engine optimization.</span>
-                            <span class="vi">Cấu trúc mã chuẩn ngữ nghĩa và tối ưu hóa SEO.</span>
-                        </p>
-                    </div>
-                    <div class="skill-card glass-card" data-category="languages" data-color="css">
-                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/css/1572B6" alt="CSS3" class="brand-icon" loading="lazy" width="28" height="28"></div>
-                        <h4 class="skill-name">CSS3 / SCSS</h4>
-                        <p class="skill-desc">
-                            <span class="en">Responsive grids, SCSS mapping, structural layouts.</span>
-                            <span class="vi">Giao diện responsive linh hoạt, phân tách biến SCSS.</span>
-                        </p>
-                    </div>
-                    <div class="skill-card glass-card" data-category="languages" data-color="js">
-                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="JavaScript" class="brand-icon" loading="lazy" width="28" height="28"></div>
-                        <h4 class="skill-name">JavaScript</h4>
-                        <p class="skill-desc">
-                            <span class="en">ES6+ syntax, asynchronous event flows, DOM handling.</span>
-                            <span class="vi">Cú pháp ES6+, xử lý bất đồng bộ, thao tác DOM tối ưu.</span>
-                        </p>
-                    </div>
-                    <div class="skill-card glass-card" data-category="languages" data-color="ts">
-                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/typescript/3178C6" alt="TypeScript" class="brand-icon" loading="lazy" width="28" height="28"></div>
-                        <h4 class="skill-name">TypeScript</h4>
-                        <p class="skill-desc">
-                            <span class="en">Type-safe development, modular component architectures.</span>
-                            <span class="vi">Lập trình an toàn kiểu dữ liệu, module hóa cấu trúc giao diện.</span>
-                        </p>
-                    </div>
-                    <div class="skill-card glass-card" data-category="languages" data-color="php">
-                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/php/777BB4" alt="PHP" class="brand-icon" loading="lazy" width="28" height="28"></div>
-                        <h4 class="skill-name">PHP</h4>
-                        <p class="skill-desc">
-                            <span class="en">Full-stack web scripting, OOP patterns, secure session handling.</span>
-                            <span class="vi">Kịch bản backend hướng đối tượng, xử lý bảo mật phiên làm việc.</span>
-                        </p>
-                    </div>
-                    <div class="skill-card glass-card" data-category="languages" data-color="python">
-                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/python/3776AB" alt="Python" class="brand-icon" loading="lazy" width="28" height="28"></div>
-                        <h4 class="skill-name">Python</h4>
-                        <p class="skill-desc">
-                            <span class="en">Fast scripting, API automation, data mapping utilities.</span>
-                            <span class="vi">Viết kịch bản xử lý nhanh, tự động hóa API, tiện ích dữ liệu.</span>
-                        </p>
-                    </div>
-
-                    <!-- Frameworks -->
-                    <div class="skill-card glass-card skill-card--wide" data-category="frameworks" data-color="laravel">
-                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/laravel/FF2D20" alt="Laravel" class="brand-icon" loading="lazy" width="28" height="28"></div>
-                        <h4 class="skill-name">Laravel</h4>
-                        <p class="skill-desc">
-                            <span class="en">Eloquent ORM, complex relational migrations, secure API gateways.</span>
-                            <span class="vi">Eloquent ORM, di chuyển dữ liệu quan hệ, cổng API bảo mật.</span>
-                        </p>
-                    </div>
-                    <div class="skill-card glass-card" data-category="frameworks" data-color="fastapi">
-                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/fastapi/009688" alt="FastAPI" class="brand-icon" loading="lazy" width="28" height="28"></div>
-                        <h4 class="skill-name">FastAPI</h4>
-                        <p class="skill-desc">
-                            <span class="en">Modern async Python services, automatic schema definitions.</span>
-                            <span class="vi">Kiến trúc backend Python bất đồng bộ, tự động định nghĩa schema.</span>
-                        </p>
-                    </div>
-                    <div class="skill-card glass-card skill-card--wide" data-category="frameworks" data-color="vue">
-                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/vuedotjs/4FC08D" alt="VueJS" class="brand-icon" loading="lazy" width="28" height="28"></div>
-                        <h4 class="skill-name">VueJS</h4>
-                        <p class="skill-desc">
-                            <span class="en">Reactive dashboards, modular components, Pinia/Vuex management.</span>
-                            <span class="vi">Bảng điều khiển phản hồi, module hóa UI, quản lý Pinia/Vuex.</span>
-                        </p>
-                    </div>
-                    <div class="skill-card glass-card" data-category="frameworks" data-color="react">
-                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/react/61DAFB" alt="ReactJS" class="brand-icon" loading="lazy" width="28" height="28"></div>
-                        <h4 class="skill-name">ReactJS</h4>
-                        <p class="skill-desc">
-                            <span class="en">Dynamic interactive SPAs, virtual DOM optimization, state hooks.</span>
-                            <span class="vi">Ứng dụng SPA động tương tác cao, tối ưu DOM ảo, quản lý hook state.</span>
-                        </p>
-                    </div>
-                    <div class="skill-card glass-card" data-category="frameworks" data-color="wordpress">
-                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/wordpress/21759B" alt="WordPress" class="brand-icon" loading="lazy" width="28" height="28"></div>
-                        <h4 class="skill-name">WordPress</h4>
-                        <p class="skill-desc">
-                            <span class="en">Custom theme & plugin engineering, payment gateway hooks.</span>
-                            <span class="vi">Xây dựng giao diện & plugin tùy biến, cấu hình cổng thanh toán.</span>
-                        </p>
-                    </div>
-
-                    <!-- Databases & UI -->
-                    <div class="skill-card glass-card" data-category="databases" data-color="mysql">
-                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/mysql/4479A1" alt="MySQL" class="brand-icon" loading="lazy" width="28" height="28"></div>
-                        <h4 class="skill-name">MySQL</h4>
-                        <p class="skill-desc">
-                            <span class="en">Relational mapping, transactional queries, performance optimization.</span>
-                            <span class="vi">Ánh xạ quan hệ, tối ưu hóa truy vấn SQL, đảm bảo giao dịch ổn định.</span>
-                        </p>
-                    </div>
-                    <div class="skill-card glass-card" data-category="databases" data-color="postgres">
-                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/postgresql/336791" alt="PostgreSQL" class="brand-icon" loading="lazy" width="28" height="28"></div>
-                        <h4 class="skill-name">PostgreSQL</h4>
-                        <p class="skill-desc">
-                            <span class="en">Complex data structures, custom CTE queries, database indexing.</span>
-                            <span class="vi">Cấu trúc dữ liệu phức tạp, tối ưu chỉ mục, viết truy vấn CTE.</span>
-                        </p>
-                    </div>
-                    <div class="skill-card glass-card" data-category="databases" data-color="react">
-                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/tailwindcss/06B6D4" alt="UI Libraries" class="brand-icon" loading="lazy" width="28" height="28"></div>
-                        <h4 class="skill-name">UI Libraries</h4>
-                        <p class="skill-desc">
-                            <span class="en">TailwindCSS, Ant Design, Bootstrap for pixel-perfect fidelity.</span>
-                            <span class="vi">TailwindCSS, Ant Design, Bootstrap cho giao diện chuẩn Figma.</span>
-                        </p>
-                    </div>
-
-                    <!-- DevOps & AI -->
-                    <div class="skill-card glass-card" data-category="devops" data-color="git">
-                        <div class="skill-icon"><img src="https://cdn.simpleicons.org/git/F05032" alt="Git" class="brand-icon" loading="lazy" width="28" height="28"></div>
-                        <h4 class="skill-name">Git</h4>
-                        <p class="skill-desc">
-                            <span class="en">Branching strategies, conflict resolutions, collaborative reviews.</span>
-                            <span class="vi">Chiến lược phân nhánh, giải quyết xung đột mã nguồn, review code.</span>
-                        </p>
-                    </div>
-                    <div class="skill-card glass-card" data-category="devops" data-color="cicd">
-                        <div class="skill-icon"><i class="ph-light ph-toolbox"></i></div>
-                        <h4 class="skill-name">DevOps & Tools</h4>
-                        <p class="skill-desc">
-                            <span class="en">Git, CI/CD, Docker basic, Postman, PgAdmin4, MySQL Workbench.</span>
-                            <span class="vi">Sử dụng Git, CI/CD, Docker cơ bản, Postman, PgAdmin4, MySQL Workbench.</span>
-                        </p>
-                    </div>
-                    <div class="skill-card glass-card" data-category="devops" data-color="postman">
-                        <div class="skill-icon"><i class="ph-light ph-brain"></i></div>
-                        <h4 class="skill-name">AI Productivity</h4>
-                        <p class="skill-desc">
-                            <span class="en">Claude Code, Cursor, Antigravity, Codex, ChatGPT for extreme velocity.</span>
-                            <span class="vi">Ứng dụng Claude Code, Cursor, Antigravity, Codex, ChatGPT tăng tốc độ lập trình.</span>
-                        </p>
-                    </div>
-                </div>
+        <!-- ============ SKILLS ============ -->
+        <section id="skills" class="v2-section" aria-label="Tech stack">
+            <div class="section-shell">
+                <h2 class="v2-section-title reveal-scale"><span class="title-index"></span><span class="en">Tech Stack</span><span class="vi">Công nghệ sử dụng</span></h2>
+                <div class="skill-filter-bar" id="skill-filter-bar" role="group" aria-label="Filter tech stack"></div>
+                <div class="bento-grid skills-bento" id="skills-bento" aria-busy="true"></div>
             </div>
         </section>
 
-        <!-- Projects Section -->
-        <section id="projects" class="projects-section scroll-reveal">
-            <div class="section-container">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span class="en">Featured Projects</span>
-                        <span class="vi">Dự án Thực tế</span>
-                    </h2>
-                    <div class="section-divider"></div>
-                </div>
-
-                <!-- TODO: replace each .project-mockup placeholder below with a real
-                     project screenshot (see plan's "Content dependencies"). -->
-                <div class="projects-grid">
-                    <!-- Project 1: Matsuo System -->
-                    <div class="project-bezel">
-                    <div class="project-card glass-card">
-                        <div class="project-img-wrapper">
-                            <div class="project-tag">
-                                <span class="en">Backend Heavy / API Integration</span>
-                                <span class="vi">Backend / Tích hợp API</span>
-                            </div>
-                            <div class="project-tech-icons">
-                                <span title="Laravel"><img src="https://cdn.simpleicons.org/laravel/FF2D20" alt="Laravel" loading="lazy" width="20" height="20"></span>
-                                <span title="VueJS"><img src="https://cdn.simpleicons.org/vuedotjs/4FC08D" alt="VueJS" loading="lazy" width="20" height="20"></span>
-                                <span title="PostgreSQL"><img src="https://cdn.simpleicons.org/postgresql/336791" alt="PostgreSQL" loading="lazy" width="20" height="20"></span>
-                            </div>
-                            <div class="project-gradient-overlay"></div>
-                            <div class="project-mockup">
-                                <i class="ph-light ph-receipt mock-icon"></i>
-                                <span class="mock-tag">&lt;Matsuo System/&gt;</span>
-                            </div>
-                        </div>
-                        <div class="project-info">
-                            <h3 class="project-name">Matsuo System</h3>
-                            <p class="project-subtitle">
-                                <span class="en">4 members | March 2026 - May 2026</span>
-                                <span class="vi">4 thành viên | Tháng 3/2026 - Tháng 5/2026</span>
-                            </p>
-                            <p class="project-desc">
-                                <span class="en">A web-based system designed to process and manage multiple types of CSV files, where each file type follows its own processing rules. The extracted data is used to generate and manage information for partners, departments, and invoices.</span>
-                                <span class="vi">Hệ thống nền tảng web được thiết kế để xử lý và quản lý nhiều loại tệp CSV, trong đó mỗi loại tệp tuân theo các quy tắc xử lý riêng biệt. Dữ liệu trích xuất được sử dụng để tạo và quản lý thông tin cho đối tác, phòng ban và hóa đơn.</span>
-                            </p>
-                            <div class="project-highlights">
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Built the frontend interface and backend APIs based on project requirements.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Xây dựng giao diện frontend và hệ thống API backend dựa trên yêu cầu dự án.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Designed and implemented CSV file upload, creation, and update features based on different file types with specific processing rules.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Thiết kế và triển khai tính năng tải lên, tạo mới và cập nhật tệp CSV cho từng loại tệp với quy tắc xử lý cụ thể.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Implemented data processing logic to transform CSV data into partner, department, and invoice information.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Triển khai logic xử lý dữ liệu để chuyển đổi dữ liệu CSV thành thông tin đối tác, phòng ban và hóa đơn.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Integrated the system with Money Forward for invoice creation and management.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Tích hợp hệ thống với dịch vụ Money Forward để tạo và quản lý hóa đơn.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Developed and optimized RESTful APIs for frontend consumption.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Phát triển và tối ưu hóa hệ thống RESTful API phục vụ phía frontend.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Ensured system performance and stability when handling multiple files and large datasets.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Đảm bảo hiệu năng và độ ổn định của hệ thống khi xử lý nhiều tệp tin và tập dữ liệu lớn.</span>
-                                </span>
-                            </div>
-                            <div class="project-tech-tags">
-                                <span class="tech-tag">Laravel</span>
-                                <span class="tech-tag">VueJS</span>
-                                <span class="tech-tag">PostgreSQL</span>
-                                <span class="tech-tag">Money Forward Service</span>
-                            </div>
-
-                        </div>
-                    </div>
-                    </div>
-
-                    <!-- Project 2: Simple CRM -->
-                    <div class="project-bezel">
-                    <div class="project-card glass-card">
-                        <div class="project-img-wrapper">
-                            <div class="project-tag">
-                                <span class="en">Full-Stack / FastAPI</span>
-                                <span class="vi">Full-Stack / FastAPI</span>
-                            </div>
-                            <div class="project-tech-icons">
-                                <span title="FastAPI"><img src="https://cdn.simpleicons.org/fastapi/009688" alt="FastAPI" loading="lazy" width="20" height="20"></span>
-                                <span title="VueJS"><img src="https://cdn.simpleicons.org/vuedotjs/4FC08D" alt="VueJS" loading="lazy" width="20" height="20"></span>
-                                <span title="MySQL"><img src="https://cdn.simpleicons.org/mysql/4479A1" alt="MySQL" loading="lazy" width="20" height="20"></span>
-                            </div>
-                            <div class="project-gradient-overlay"></div>
-                            <div class="project-mockup">
-                                <i class="ph-light ph-chat-circle-text mock-icon"></i>
-                                <span class="mock-tag">&lt;Simple CRM/&gt;</span>
-                            </div>
-                        </div>
-                        <div class="project-info">
-                            <h3 class="project-name">Simple CRM</h3>
-                            <p class="project-subtitle">
-                                <span class="en">3 members | March 2026 - May 2026</span>
-                                <span class="vi">3 thành viên | Tháng 3/2026 - Tháng 5/2026</span>
-                            </p>
-                            <p class="project-desc">
-                                <span class="en">Developed a contact management website used as a contact portal for the client's main website, allowing users to submit inquiries and administrators to manage incoming messages efficiently.</span>
-                                <span class="vi">Xây dựng website quản lý liên hệ (contact portal) cho trang chủ của khách hàng, cho phép người dùng gửi yêu cầu và quản trị viên xử lý tin nhắn đến một cách hiệu quả.</span>
-                            </p>
-                            <div class="project-highlights">
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Developed contact form modules for customer websites.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Phát triển module biểu mẫu liên hệ (contact form) cho website khách hàng.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Built responsive UI/UX for contact forms and admin dashboard.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Xây dựng giao diện responsive cho biểu mẫu liên hệ và bảng điều khiển quản trị.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Designed and implemented RESTful APIs using FastAPI.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Thiết kế và triển khai RESTful API bằng FastAPI.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Implemented message management functions including search, filtering, and status handling.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Triển khai chức năng quản lý tin nhắn bao gồm tìm kiếm, lọc và xử lý trạng thái.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Participated in code reviews to maintain code quality.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Tham gia đánh giá mã nguồn (code review) để duy trì chất lượng code.</span>
-                                </span>
-                            </div>
-                            <div class="project-tech-tags">
-                                <span class="tech-tag">FastAPI</span>
-                                <span class="tech-tag">VueJS</span>
-                                <span class="tech-tag">MySQL</span>
-                                <span class="tech-tag">Ant Design</span>
-                            </div>
-
-                        </div>
-                    </div>
-                    </div>
-
-                    <!-- Project 3: Fany Story -->
-                    <div class="project-bezel">
-                    <div class="project-card glass-card">
-                        <div class="project-img-wrapper">
-                            <div class="project-tag">
-                                <span class="en">Full-Stack / Microservices</span>
-                                <span class="vi">Full-Stack / NestJS / PDF.js</span>
-                            </div>
-                            <div class="project-tech-icons">
-                                <span title="VueJS"><img src="https://cdn.simpleicons.org/vuedotjs/4FC08D" alt="VueJS" loading="lazy" width="20" height="20"></span>
-                                <span title="Laravel"><img src="https://cdn.simpleicons.org/laravel/FF2D20" alt="Laravel" loading="lazy" width="20" height="20"></span>
-                                <span title="NestJS"><img src="https://cdn.simpleicons.org/nestjs/E0234E" alt="NestJS" loading="lazy" width="20" height="20"></span>
-                            </div>
-                            <div class="project-gradient-overlay"></div>
-                            <div class="project-mockup">
-                                <i class="ph-light ph-book-open-text mock-icon"></i>
-                                <span class="mock-tag">&lt;Fany Story/&gt;</span>
-                            </div>
-                        </div>
-                        <div class="project-info">
-                            <h3 class="project-name">Fany Story</h3>
-                            <p class="project-subtitle">
-                                <span class="en">5 members | November 2024 - February 2025</span>
-                                <span class="vi">5 thành viên | Tháng 11/2024 - Tháng 2/2025</span>
-                            </p>
-                            <p class="project-desc">
-                                <span class="en">A story-reading web app with a separate web-based admin portal for content management, including author registration and story uploads.</span>
-                                <span class="vi">Ứng dụng web đọc truyện với cổng quản trị riêng biệt để quản lý nội dung, bao gồm đăng ký tác giả và đăng tải chương truyện.</span>
-                            </p>
-                            <div class="project-highlights">
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Built core features: users, manga, reader, chapters, master data and uploads.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Xây dựng các tính năng cốt lõi: quản lý người dùng, truyện tranh (manga), giao diện đọc, chương truyện, dữ liệu danh mục (master data) và tải lên tệp tin.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Converted Figma designs into responsive, accessible UIs with pixel-perfect fidelity.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Chuyển đổi bản thiết kế Figma thành giao diện responsive dễ tiếp cận với độ chính xác cao.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Used PDF.js to render admin-uploaded registration PDFs for end users.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Sử dụng thư viện PDF.js để hiển thị trực quan tài liệu hướng dẫn tác giả đăng ký (PDF) cho người dùng cuối.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Participated in code reviews to maintain code quality.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Tham gia đánh giá mã nguồn (code review) để duy trì chất lượng code.</span>
-                                </span>
-                            </div>
-                            <div class="project-tech-tags">
-                                <span class="tech-tag">VueJS</span>
-                                <span class="tech-tag">TailwindCSS</span>
-                                <span class="tech-tag">PDF.js</span>
-                                <span class="tech-tag">Ant Design</span>
-                                <span class="tech-tag">Laravel</span>
-                                <span class="tech-tag">NestJs</span>
-                                <span class="tech-tag">MySQL</span>
-                            </div>
-
-                        </div>
-                    </div>
-                    </div>
-
-                    <!-- Project 4: Cleaning Shift -->
-                    <div class="project-bezel">
-                    <div class="project-card glass-card">
-                        <div class="project-img-wrapper">
-                            <div class="project-tag">
-                                <span class="en">Full-Stack / Booking System</span>
-                                <span class="vi">Full-Stack / Hệ thống đặt chỗ</span>
-                            </div>
-                            <div class="project-tech-icons">
-                                <span title="Laravel"><img src="https://cdn.simpleicons.org/laravel/FF2D20" alt="Laravel" loading="lazy" width="20" height="20"></span>
-                                <span title="ReactJS"><img src="https://cdn.simpleicons.org/react/61DAFB" alt="ReactJS" loading="lazy" width="20" height="20"></span>
-                                <span title="MySQL"><img src="https://cdn.simpleicons.org/mysql/4479A1" alt="MySQL" loading="lazy" width="20" height="20"></span>
-                            </div>
-                            <div class="project-gradient-overlay"></div>
-                            <div class="project-mockup">
-                                <i class="ph-light ph-calendar-check mock-icon"></i>
-                                <span class="mock-tag">&lt;Cleaning Shift/&gt;</span>
-                            </div>
-                        </div>
-                        <div class="project-info">
-                            <h3 class="project-name">Cleaning Shift</h3>
-                            <p class="project-subtitle">
-                                <span class="en">4 members | February 2024 - May 2024</span>
-                                <span class="vi">4 thành viên | Tháng 2/2024 - Tháng 5/2024</span>
-                            </p>
-                            <p class="project-desc">
-                                <span class="en">A web-based system for managing campsite bookings, including staff and customer management, reservation scheduling, payments, and reporting features.</span>
-                                <span class="vi">Hệ thống web quản lý đặt chỗ khu cắm trại (campsite), bao gồm quản lý nhân viên, khách hàng, lịch đặt chỗ, thanh toán và báo cáo.</span>
-                            </p>
-                            <div class="project-highlights">
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Developed RESTful APIs and responsive UI based on technical specifications and Figma designs.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Phát triển RESTful API và giao diện responsive dựa trên tài liệu kỹ thuật và thiết kế Figma.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Implemented JWT-based authentication and authorization, ensuring secure user access and role-based permissions.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Triển khai xác thực và phân quyền dựa trên JWT, đảm bảo truy cập an toàn và phân quyền theo vai trò.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Developed customer management and campsite booking modules.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Phát triển module quản lý khách hàng và đặt chỗ khu cắm trại.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Implemented online payment integration using Stripe.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Tích hợp thanh toán trực tuyến qua Stripe.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Developed admin dashboard for managing users and marketplace data.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Xây dựng bảng điều khiển quản trị để quản lý người dùng và dữ liệu marketplace.</span>
-                                </span>
-                                <span>
-                                    <span class="en"><i class="ph-light ph-check-circle"></i> Participated in code reviews to maintain code quality.</span>
-                                    <span class="vi"><i class="ph-light ph-check-circle"></i> Tham gia đánh giá mã nguồn để duy trì chất lượng code.</span>
-                                </span>
-                            </div>
-                            <div class="project-tech-tags">
-                                <span class="tech-tag">Laravel</span>
-                                <span class="tech-tag">ReactJS</span>
-                                <span class="tech-tag">Ant Design</span>
-                                <span class="tech-tag">MySQL</span>
-                                <span class="tech-tag">Stripe</span>
-                                <span class="tech-tag">FullCalendar</span>
-                            </div>
-
-                        </div>
-                    </div>
-                    </div>
-                </div>
+        <!-- ============ PROJECTS ============ -->
+        <section id="projects" class="v2-section" aria-label="Featured projects">
+            <div class="section-shell">
+                <h2 class="v2-section-title reveal-scale"><span class="title-index"></span><span class="en">Featured Projects</span><span class="vi">Dự án Thực tế</span></h2>
+                <div class="bento-grid projects-bento" id="projects-bento" aria-busy="true"></div>
             </div>
         </section>
 
-        <!-- Experience / Career Path -->
-        <section id="experience" class="experience-section scroll-reveal">
-            <div class="section-container">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span class="en">Career Journey</span>
-                        <span class="vi">Kinh nghiệm & Học vấn</span>
-                    </h2>
-                    <div class="section-divider"></div>
-                </div>
-
-                <div class="timeline">
-                    <!-- Item 1 -->
-                    <div class="timeline-item left">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content glass-card">
-                            <span class="timeline-date">
-                                <span class="en">June 2023 - May 2026</span>
-                                <span class="vi">Tháng 6/2023 - Tháng 5/2026</span>
-                            </span>
-                            <h3 class="timeline-role">
-                                <span class="en">Full-stack Web Developer</span>
-                                <span class="vi">Nhà phát triển Web Full-stack</span>
-                            </h3>
-                            <p class="timeline-company">DT Solutions</p>
-                            <div class="timeline-details">
-                                <span class="en">
-                                    <ul>
-                                        <li>Developed and maintained full-stack web applications using PHP and modern frontend frameworks.</li>
-                                        <li>Designed and optimized RESTful APIs with scalable architecture and efficient data flow.</li>
-                                        <li>Built responsive, cross-browser compatible UIs based on Figma designs.</li>
-                                        <li>Customized WordPress themes and plugins for business and e-commerce needs.</li>
-                                        <li>Integrated payment gateways (Stripe, PayJP) for secure transactions.</li>
-                                        <li>Performed code reviews, bug fixing, and performance optimization in team collaboration.</li>
-                                    </ul>
-                                </span>
-                                <span class="vi">
-                                    <ul>
-                                        <li>Phát triển và bảo trì các ứng dụng web Full-stack sử dụng PHP và các framework frontend hiện đại.</li>
-                                        <li>Thiết kế và tối ưu hóa hệ thống API RESTful với kiến trúc mở rộng và luồng dữ liệu tối ưu.</li>
-                                        <li>Xây dựng giao diện responsive tương thích đa trình duyệt từ bản thiết kế Figma chuẩn xác.</li>
-                                        <li>Tùy biến các giao diện (theme) và plugin WordPress đáp ứng nhu cầu kinh doanh và thương mại điện tử.</li>
-                                        <li>Tích hợp các cổng thanh toán quốc tế (Stripe, PayJP) và xử lý giao dịch bảo mật.</li>
-                                        <li>Tham gia đánh giá mã nguồn (code review), sửa lỗi và tối ưu hóa hiệu năng trong nhóm.</li>
-                                    </ul>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Item 2 -->
-                    <div class="timeline-item right">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content glass-card">
-                            <span class="timeline-date">
-                                <span class="en">Mar 2025 - Jan 2026</span>
-                                <span class="vi">Tháng 3/2025 - Tháng 1/2026</span>
-                            </span>
-                            <h3 class="timeline-role">
-                                <span class="en">Onsite PHP Developer</span>
-                                <span class="vi">Nhà phát triển PHP Onsite</span>
-                            </h3>
-                            <p class="timeline-company">Pionero Viet Nam</p>
-                            <div class="timeline-details">
-                                <span class="en">
-                                    <ul>
-                                        <li>Maintained and contributed to multiple onsite projects, ranging from legacy PHP systems (PHP 5.x-8.x) to modern Laravel & VueJS applications, as well as WordPress-based websites.</li>
-                                        <li>Built and customized WordPress websites, including theme and plugin development, ensuring performance optimization.</li>
-                                        <li>Collaborated closely with team members to ensure system stability, code quality, and on-time delivery.</li>
-                                        <li>Applied CI/CD pipelines using CircleCI to support build and deployment workflows.</li>
-                                    </ul>
-                                </span>
-                                <span class="vi">
-                                    <ul>
-                                        <li>Bảo trì và đóng góp vào nhiều dự án tại văn phòng khách hàng, từ hệ thống PHP cũ (PHP 5.x-8.x) đến các ứng dụng Laravel & VueJS hiện đại, cũng như các trang web nền tảng WordPress.</li>
-                                        <li>Xây dựng và tùy biến website WordPress, bao gồm lập trình giao diện (theme) và plugin, đảm bảo tối ưu hóa hiệu năng.</li>
-                                        <li>Hợp tác chặt chẽ với các thành viên trong nhóm để đảm bảo sự ổn định của hệ thống, chất lượng mã nguồn và bàn giao đúng hẹn.</li>
-                                        <li>Áp dụng quy trình CI/CD sử dụng CircleCI nhằm hỗ trợ các luồng đóng gói và triển khai.</li>
-                                    </ul>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Item 3 (Education) -->
-                    <div class="timeline-item left">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content glass-card">
-                            <span class="timeline-date">2019 - 2023</span>
-                            <h3 class="timeline-role">
-                                <span class="en">Bachelor of Software Engineering</span>
-                                <span class="vi">Kỹ sư Kỹ thuật Phần mềm</span>
-                            </h3>
-                            <p class="timeline-company">
-                                <span class="en">Hanoi University of Mining and Geology</span>
-                                <span class="vi">Trường Đại học Mỏ - Địa chất Hà Nội</span>
-                            </p>
-                            <div class="timeline-details">
-                                <span class="en">
-                                    <ul>
-                                        <li>Major: Software Engineering</li>
-                                        <li>Graduation GPA: 3.14 (Strong Academic Classification)</li>
-                                        <li>Acquired solid fundamentals in Object-Oriented Programming (OOP), Data Structures & Algorithms, Database Design, System Analysis, and Software testing methodologies.</li>
-                                    </ul>
-                                </span>
-                                <span class="vi">
-                                    <ul>
-                                        <li>Chuyên ngành: Kỹ thuật Phần mềm</li>
-                                        <li>Điểm trung bình tốt nghiệp: 3.14 (Xếp loại Khá)</li>
-                                        <li>Trang bị kiến thức nền tảng vững vàng về Lập trình hướng đối tượng (OOP), Cấu trúc dữ liệu & Giải thuật, Thiết kế cơ sở dữ liệu, Phân tích thiết kế hệ thống và Kiểm thử phần mềm.</li>
-                                    </ul>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- ============ EXPERIENCE ============ -->
+        <section id="experience" class="v2-section" aria-label="Career journey">
+            <div class="section-shell">
+                <h2 class="v2-section-title reveal-scale"><span class="title-index"></span><span class="en">Career Journey</span><span class="vi">Kinh nghiệm & Học vấn</span></h2>
+                <ol class="exp-stack" id="exp-stack" aria-busy="true"></ol>
             </div>
         </section>
 
-        <!-- Contact Section -->
-        <section id="contact" class="contact-section scroll-reveal">
-            <div class="section-container">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span class="en">Let's Build Something Great</span>
-                        <span class="vi">Cùng Xây Dựng Dự Án Lớn</span>
-                    </h2>
-                    <div class="section-divider"></div>
-                </div>
-
-                <div class="contact-grid">
-                    <!-- Info panel -->
-                    <div class="contact-bezel">
-                    <div class="contact-info-panel glass-card">
-                        <h3>
-                            <span class="en">Connect With Me</span>
-                            <span class="vi">Kết nối với mình</span>
-                        </h3>
-                        <p>
-                            <span class="en">Feel free to reach out for project collaboration, job opportunities, or technical inquiries. I am always open to exchanging ideas and growing technical expertise.</span>
-                            <span class="vi">Hãy liên lạc với mình để cùng hợp tác dự án, cơ hội nghề nghiệp hoặc trao đổi kỹ thuật. Mình luôn cởi mở chia sẻ các ý tưởng và phát triển chuyên môn kỹ thuật.</span>
-                        </p>
-                        
-                        <div class="info-details">
-                            <a href="mailto:tranhungith18@gmail.com" class="info-item">
-                                <div class="info-icon"><i class="ph-light ph-envelope-simple"></i></div>
-                                <div class="info-text">
-                                    <span class="info-label">Email</span>
-                                    <span class="info-val">tranhungith18@gmail.com</span>
-                                </div>
-                            </a>
-
-                            <a href="tel:0964985882" class="info-item">
-                                <div class="info-icon"><i class="ph-light ph-phone"></i></div>
-                                <div class="info-text">
-                                    <span class="info-label">
-                                        <span class="en">Phone</span>
-                                        <span class="vi">Điện thoại</span>
-                                    </span>
-                                    <span class="info-val">0964985882</span>
-                                </div>
-                            </a>
-
-                            <a href="https://github.com/tranhung18" target="_blank" class="info-item">
-                                <div class="info-icon"><i class="ph-light ph-github-logo"></i></div>
-                                <div class="info-text">
-                                    <span class="info-label">GitHub</span>
-                                    <span class="info-val">github.com/tranhung18</span>
-                                </div>
-                            </a>
-
-                            <a href="https://www.facebook.com/tranhung18.it" target="_blank" class="info-item">
-                                <div class="info-icon"><i class="ph-light ph-facebook-logo"></i></div>
-                                <div class="info-text">
-                                    <span class="info-label">Facebook</span>
-                                    <span class="info-val">facebook.com/tranhung18.it</span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    </div>
-                </div>
+        <!-- ============ CONTACT ============ -->
+        <section id="contact" class="v2-section" aria-label="Contact">
+            <div class="section-shell">
+                <h2 class="v2-section-title reveal-scale"><span class="title-index"></span><span class="en">Let's Build Something Great</span><span class="vi">Cùng Xây Dựng Dự Án Lớn</span></h2>
+                <div class="bento-grid contact-bento" id="contact-bento" aria-busy="true"></div>
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>
-            <span class="en">&copy; 2026 Trần Hữu Hùng. All rights reserved. Built with clean, high-performance code.</span>
-            <span class="vi">&copy; 2026 Trần Hữu Hùng. Bảo lưu mọi quyền. Xây dựng với mã nguồn sạch, hiệu năng cao.</span>
-        </p>
-    </footer>
+    <footer class="v2-footer" id="v2-footer"></footer>
 
-    <!-- ThreeJS Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" integrity="sha512-4MU3sXm2eZea3z99uX/m538X1mdfuVrcWpx1L17Z389v6V2fGgO/s5t/qWtbZkQ3Zpx9n00Z/Ue9wK801d0Bw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    
-    <!-- ThreeJS Interactive Particle System Background -->
-    <script src="js/three-bg.js"></script>
-    
-    <!-- Custom Web Interactions and Effects -->
-    <script src="js/main.js"></script>
+    <noscript>
+        <div style="padding:3rem 1.5rem;font-family:monospace;color:#c9d1d9;background:#0a0e14;">
+            This layout renders from JavaScript. Please enable JavaScript, or
+            <a href="v1.html" style="color:#7c5cff;">view the static V1 version</a>.
+        </div>
+    </noscript>
+
+    <script type="module" src="js/version-toggle.js"></script>
+    <script type="module" src="v2.js"></script>
 </body>
 </html>
