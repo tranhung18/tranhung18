@@ -45,13 +45,20 @@ function renderList(items, mapper) {
    NAV
    ========================================================================== */
 
-/** Renders the dock nav links from data.nav. @returns {void} */
+/**
+ * Renders the dock nav links from data.nav into both the desktop dock nav
+ * and the separate mobile overlay nav (see #mobile-nav-overlay in index.html
+ * for why these are two elements instead of one repositioned via CSS).
+ * @returns {void}
+ */
 function renderNav() {
-    const dockNav = document.getElementById('dock-nav');
-    if (!dockNav) return;
-    dockNav.innerHTML = renderList(nav, (item) => `
+    const links = renderList(nav, (item) => `
         <a href="${item.href}" class="dock-link">${bi(item.label)}</a>
     `);
+    const dockNav = document.getElementById('dock-nav');
+    const mobileNav = document.getElementById('mobile-nav-overlay');
+    if (dockNav) dockNav.innerHTML = links;
+    if (mobileNav) mobileNav.innerHTML = links;
 }
 
 /* ==========================================================================
@@ -407,29 +414,30 @@ function initLangSwitch() {
  */
 function initMobileMenu() {
     const toggle = document.getElementById('dock-menu-toggle');
-    const dockNav = document.getElementById('dock-nav');
+    const overlay = document.getElementById('mobile-nav-overlay');
     const mainContent = document.getElementById('main-content');
     const footer = document.getElementById('v2-footer');
-    if (!toggle || !dockNav) return;
+    if (!toggle || !overlay) return;
 
     function setOpen(isOpen) {
-        dockNav.classList.toggle('mobile-open', isOpen);
+        overlay.classList.toggle('open', isOpen);
         toggle.classList.toggle('active', isOpen);
         toggle.setAttribute('aria-expanded', String(isOpen));
+        document.body.classList.toggle('nav-open', isOpen);
         [mainContent, footer].forEach((el) => {
             if (!el) return;
             if (isOpen) el.setAttribute('inert', ''); else el.removeAttribute('inert');
         });
     }
 
-    toggle.addEventListener('click', () => setOpen(!dockNav.classList.contains('mobile-open')));
+    toggle.addEventListener('click', () => setOpen(!overlay.classList.contains('open')));
 
-    dockNav.querySelectorAll('.dock-link').forEach((link) => {
+    overlay.querySelectorAll('.dock-link').forEach((link) => {
         link.addEventListener('click', () => setOpen(false));
     });
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && dockNav.classList.contains('mobile-open')) setOpen(false);
+        if (e.key === 'Escape' && overlay.classList.contains('open')) setOpen(false);
     });
 }
 
@@ -487,8 +495,8 @@ function initScrollReveal() {
    ========================================================================== */
 
 /**
- * Generic lazy-loader for a tile-scoped Three.js scene: skipped on reduced-motion/
- * mobile, imported near-viewport, paused/resumed on visibility, disposed on pagehide.
+ * Generic lazy-loader for a tile-scoped Three.js scene: skipped on
+ * reduced-motion, imported near-viewport, paused/resumed on visibility, disposed on pagehide.
  * @param {string} tileId
  * @param {string} canvasWrapId
  * @param {(wrap: HTMLElement) => Promise<{pause:()=>void, resume:()=>void, dispose:()=>void}>} createScene
@@ -499,8 +507,7 @@ function initLazy3D(tileId, canvasWrapId, createScene) {
     const canvasWrap = document.getElementById(canvasWrapId);
     if (!tile || !canvasWrap) return;
 
-    const isMobile = window.matchMedia('(max-width: 767px)').matches;
-    if (prefersReducedMotion || isMobile) {
+    if (prefersReducedMotion) {
         return; // static CSS fallback (already in the markup) stays forever
     }
 
@@ -563,15 +570,14 @@ function initAbout3D() {
 
 /**
  * Boots the full-page tech-snake background: deferred past `load` (idle
- * callback) so it never competes with first paint; skipped on reduced-motion/mobile.
+ * callback) so it never competes with first paint; skipped on reduced-motion.
  * @returns {void}
  */
 function initSnakeBackground() {
     const wrap = document.getElementById('snake-bg-wrap');
     if (!wrap) return;
 
-    const isMobile = window.matchMedia('(max-width: 767px)').matches;
-    if (prefersReducedMotion || isMobile) return;
+    if (prefersReducedMotion) return;
 
     let controller = null;
 

@@ -345,6 +345,11 @@ p {
     transition: var(--transition-smooth);
 }
 
+.header-switches {
+    display: flex;
+    align-items: center;
+}
+
 /* Language Switcher Styling */
 .lang-switch-wrapper {
     display: flex;
@@ -1387,23 +1392,34 @@ img.profile-avatar {
 
 @media screen and (max-width: 768px) {
     .header-container {
-        padding: 1rem 1.25rem;
+        padding: 0.85rem 1.1rem;
+        flex-wrap: wrap;
+        row-gap: 0.6rem;
+    }
+
+    .logo {
+        font-size: 1.25rem;
+        order: 1;
     }
 
     .mobile-nav-toggle {
         display: flex;
         z-index: 110;
+        order: 2;
+        margin-left: auto;
     }
 
-    /* Keep the new version switch compact next to the existing lang switch
-       so the header row (logo + V1/V2 + EN/VI + hamburger) doesn't overflow
-       on narrow viewports. Purely spacing - same components as desktop. */
-    .version-switch-wrapper {
-        margin-left: 0.6rem;
+    .header-switches {
+        order: 3;
+        flex-basis: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 0.6rem;
     }
 
+    .version-switch-wrapper,
     .lang-switch-wrapper {
-        margin-left: 0.6rem;
+        margin-left: 0;
     }
 
     .version-switch,
@@ -1508,6 +1524,12 @@ img.profile-avatar {
         grid-template-columns: 1fr;
     }
 
+    .project-tech-icons {
+        top: auto;
+        bottom: 1.25rem;
+        right: 1.25rem;
+    }
+
     .project-info {
         padding: 1.5rem;
     }
@@ -1544,6 +1566,25 @@ img.profile-avatar {
 }
 
 @media screen and (max-width: 480px) {
+    .header-container {
+        padding: 0.7rem 0.9rem;
+    }
+
+    .logo {
+        font-size: 1.05rem;
+    }
+
+    .version-switch,
+    .lang-switch {
+        padding: 0.25rem 0.5rem;
+    }
+
+    .version-btn,
+    .lang-btn {
+        font-size: 0.72rem;
+        padding: 0.1rem 0.25rem;
+    }
+
     .section-container {
         padding: 3.5rem 1rem;
     }
@@ -1614,6 +1655,20 @@ img.profile-avatar {
 
     .skills-grid {
         grid-template-columns: 1fr;
+    }
+
+    .skill-card--wide {
+        grid-column: span 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .skill-card--wide .skill-name,
+    .skill-card--wide .skill-desc {
+        align-self: center;
+        text-align: center;
     }
 
     .skill-card {

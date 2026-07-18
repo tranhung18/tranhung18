@@ -121,6 +121,7 @@ a { color: inherit; }
     position: sticky;
     top: 0;
     z-index: 200;
+    isolation: isolate;
     height: var(--dock-h);
     background: rgba(10, 14, 20, 0.72);
     backdrop-filter: blur(18px);
@@ -249,6 +250,10 @@ a { color: inherit; }
     flex-direction: column;
     gap: 5px;
     padding: 4px;
+}
+
+.mobile-nav-overlay {
+    display: none;
 }
 .dock-menu-toggle .bar {
     width: 22px; height: 2px;
@@ -751,20 +756,27 @@ body.lang-vi .en { display: none !important; }
     .dock-nav { display: none; }
     .dock-menu-toggle { display: flex; }
 
-    .dock-nav.mobile-open {
+    .mobile-nav-overlay.open {
         display: flex;
         position: fixed;
         inset: var(--dock-h) 0 0 0;
         background: rgba(8, 10, 15, 0.97);
         backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         flex-direction: column;
         justify-content: flex-start;
         align-items: flex-start;
         gap: 1.5rem;
         padding: 2.5rem 2rem;
-        z-index: 199;
+        z-index: 999;
+        overflow-y: auto;
     }
-    .dock-nav.mobile-open .dock-link { font-size: 1.3rem; }
+    .mobile-nav-overlay .dock-link { font-size: 1.3rem; }
+    body.nav-open .hero-3d-canvas-wrap,
+    body.nav-open .tile-3d-backdrop,
+    body.nav-open .snake-bg-wrap {
+        visibility: hidden;
+    }
 
     .hero-bento .c-8, .hero-bento .c-4, .hero-bento .c-6, .hero-bento .c-3,
     .about-bento .c-8, .about-bento .c-4,
