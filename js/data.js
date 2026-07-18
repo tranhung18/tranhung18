@@ -4,32 +4,7 @@
  * @module data
  */
 
-export const profile = {
-    name: 'Trần Hữu Hùng',
-    shortName: 'Hùng',
-    initials: '',
-    role: {
-        en: 'Middle Full-Stack Developer',
-        vi: 'Nhà phát triển Full-stack',
-    },
-    email: 'tranhungith18@gmail.com',
-    phone: '0964985882',
-    phoneHref: 'tel:0964985882',
-    github: { label: 'github.com/tranhung18', url: 'https://github.com/tranhung18' },
-    facebook: { label: 'facebook.com/tranhung18.it', url: 'https://www.facebook.com/tranhung18.it' },
-    university: {
-        en: 'Hanoi University of Mining and Geology',
-        vi: 'Trường Đại học Mỏ - Địa chất Hà Nội',
-    },
-    gpa: '3.14',
-    stats: [
-        { number: '3+', label: { en: 'Years Exp', vi: 'Năm kinh nghiệm' } },
-        { number: '4+', label: { en: 'Core Projects', vi: 'Dự án chính' } },
-        { number: 'GPA 3.14', label: { en: 'Software Eng', vi: 'Kỹ thuật Phần mềm' } },
-    ],
-};
-
-/** Hero typing phrases — imported by both V1 (main.js) and V2 (v2.js). */
+/** Hero typing phrases — imported by both V1 (v1.js) and V2 (v2.js). */
 export const typingPhrases = {
     en: [
         'Full-Stack Web Developer.',
@@ -52,7 +27,6 @@ export const nav = [
 ];
 
 export const hero = {
-    badge: { en: 'Available for Full-Stack Opportunities', vi: 'Sẵn sàng cho cơ hội Full-Stack' },
     greeting: { en: "Hi, I'm", vi: 'Xin chào, Tôi là' },
     subtitlePrefix: { en: 'I am a', vi: 'Tôi là' },
     ctaPrimary: { en: 'Explore My Work', vi: 'Khám phá dự án', href: '#projects' },
@@ -300,7 +274,6 @@ export const experience = [
 ];
 
 export const contact = {
-    heading: { en: "Let's Build Something Great", vi: 'Cùng Xây Dựng Dự Án Lớn' },
     connectHeading: { en: 'Connect With Me', vi: 'Kết nối với mình' },
     blurb: {
         en: 'Feel free to reach out for project collaboration, job opportunities, or technical inquiries. I am always open to exchanging ideas and growing technical expertise.',
@@ -319,15 +292,3 @@ export const footer = {
     vi: '© 2026 Trần Hữu Hùng. Bảo lưu mọi quyền. Xây dựng với mã nguồn sạch, hiệu năng cao.',
 };
 
-export const misc = {
-    versionToggleLabel: { en: 'Version', vi: 'Phiên bản' },
-    langToggleLabel: { en: 'Language', vi: 'Ngôn ngữ' },
-};
-
-/** Convenience bundle for consumers that want everything in one import. */
-export const data = {
-    profile, typingPhrases, nav, hero, about, skillFilters, skills,
-    projects, experience, contact, footer, misc,
-};
-
-export default data;

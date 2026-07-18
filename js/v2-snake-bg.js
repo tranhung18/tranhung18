@@ -1,14 +1,13 @@
 /**
  * v2-snake-bg.js — full-viewport ambient wireframe tube that wanders the
- * page background. See VERSION_2.md "Tech snake background" for the write-up.
+ * page background.
  * @module v2-snake-bg
  */
 
 import * as THREE from 'three';
 
 const TRAIL_LENGTH = 40;
-// Bumped from 9->15 - a thinner tube read as a near-invisible hairline.
-const TUBE_RADIUS = 15;
+const TUBE_RADIUS = 15; // thinner reads as a near-invisible hairline
 const TUBULAR_SEGMENTS = 64;
 const RADIAL_SEGMENTS = 8;
 const COLOR_TAIL = new THREE.Color(0x7c5cff); // --primary

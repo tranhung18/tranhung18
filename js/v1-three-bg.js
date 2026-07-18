@@ -18,29 +18,19 @@ class SpaceParticles {
     }
 
     init() {
-        // 1. Scene setup
         this.scene = new THREE.Scene();
 
-        // 2. Camera setup
         this.camera = new THREE.PerspectiveCamera(60, this.width / this.height, 0.1, 100);
         this.camera.position.z = 30;
 
-        // 3. Renderer setup
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.setSize(this.width, this.height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.container.appendChild(this.renderer.domElement);
 
-        // 4. Create Dynamic Glow Particle Texture
         this.particleTexture = this.createDynamicTexture();
-
-        // 5. Generate Particle Geometry & Material
         this.createParticles();
-
-        // 6. Bind Event Listeners
         this.bindEvents();
-
-        // 7. Start Animation Loop
         this.animate();
     }
 
@@ -81,7 +71,6 @@ class SpaceParticles {
         this.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         this.randomSpeeds = randomSpeeds;
 
-        // Custom particles material
         this.material = new THREE.PointsMaterial({
             size: 0.28,
             map: this.particleTexture,
@@ -162,7 +151,6 @@ class SpaceParticles {
     }
 }
 
-// Initialize on page load
 window.addEventListener('DOMContentLoaded', () => {
     new SpaceParticles();
 });

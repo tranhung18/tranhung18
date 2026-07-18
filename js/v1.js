@@ -5,12 +5,10 @@
 
 // Loaded as type="module" to import the shared typing phrases from data.js;
 // the rest of V1's markup stays hardcoded as-is.
-import { typingPhrases } from '../data.js';
+import { typingPhrases } from './data.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // ----------------------------------------------------
-    // 1. MOBILE MENU TOGGLE
-    // ----------------------------------------------------
+    // MOBILE MENU TOGGLE
     const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
     const navLinksContainer = document.querySelector('.nav-links');
     const navLinks = document.querySelectorAll('.nav-link');
@@ -21,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
             navLinksContainer.classList.toggle('active');
         });
 
-        // Close menu on click of any nav link
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
                 mobileNavToggle.classList.remove('active');
@@ -30,9 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ----------------------------------------------------
-    // 2. HEADER "SCROLLED" STATE (IntersectionObserver, no scroll listener)
-    // ----------------------------------------------------
+    // HEADER "SCROLLED" STATE (IntersectionObserver, no scroll listener)
     const header = document.querySelector('.header');
     const scrollSentinel = document.getElementById('scroll-sentinel');
 
@@ -45,9 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         headerObserver.observe(scrollSentinel);
     }
 
-    // ----------------------------------------------------
-    // 3. BILINGUAL SUPPORT & TYPING ENGINE INTEGRATION
-    // ----------------------------------------------------
+    // BILINGUAL SUPPORT & TYPING ENGINE INTEGRATION
     const typingSpan = document.querySelector('.typing-text');
     const phrasesEn = typingPhrases.en;
     const phrasesVi = typingPhrases.vi;
@@ -71,39 +64,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const currentPhrase = currentPhrases[phraseIndex];
-        
+
         if (isDeleting) {
             typingSpan.textContent = currentPhrase.substring(0, charIndex - 1);
             charIndex--;
-            typingSpeed = 50; // Deletes faster
+            typingSpeed = 50;
         } else {
             typingSpan.textContent = currentPhrase.substring(0, charIndex + 1);
             charIndex++;
-            typingSpeed = 100; // Normal typing speed
+            typingSpeed = 100;
         }
 
-        // Handle boundaries
         if (!isDeleting && charIndex === currentPhrase.length) {
             isDeleting = true;
-            typingSpeed = 2000; // Pause at end of sentence
+            typingSpeed = 2000; // pause at end of sentence before deleting
         } else if (isDeleting && charIndex === 0) {
             isDeleting = false;
             phraseIndex = (phraseIndex + 1) % currentPhrases.length;
-            typingSpeed = 500; // Pause before typing next phrase
+            typingSpeed = 500; // pause before typing the next phrase
         }
 
         typingTimeout = setTimeout(typeEffect, typingSpeed);
     }
 
-    // Language Change Controller
     function setLanguage(lang) {
         document.body.className = `lang-${lang}`;
         localStorage.setItem('portfolio-lang', lang);
-
-        // Update active typing phrases list
         currentPhrases = lang === 'vi' ? phrasesVi : phrasesEn;
 
-        // Reset Typing Engine securely
         clearTimeout(typingTimeout);
         phraseIndex = 0;
         charIndex = 0;
@@ -111,32 +99,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typingSpan) typingSpan.textContent = '';
         typeEffect();
 
-        // Update active state visual style on language switcher buttons
         document.querySelectorAll('.lang-btn').forEach(btn => {
-            if (btn.getAttribute('data-lang') === lang) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
+            btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
         });
     }
 
-    // Initialize Switcher Event Listeners
-    const langButtons = document.querySelectorAll('.lang-btn');
-    langButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const selectedLang = btn.getAttribute('data-lang');
-            setLanguage(selectedLang);
-        });
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang')));
     });
 
-    // Check LocalStorage on boot
     const savedLanguage = localStorage.getItem('portfolio-lang') || 'en';
     setLanguage(savedLanguage);
 
-    // ----------------------------------------------------
-    // 4. INTERSECTION OBSERVER (Reveal Elements on Scroll)
-    // ----------------------------------------------------
+    // INTERSECTION OBSERVER (Reveal Elements on Scroll)
     const revealElements = document.querySelectorAll('.scroll-reveal');
     const revealOptions = {
         threshold: 0.15,
@@ -147,16 +122,14 @@ document.addEventListener('DOMContentLoaded', () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('active');
-                observer.unobserve(entry.target); // Reveal only once
+                observer.unobserve(entry.target);
             }
         });
     }, revealOptions);
 
     revealElements.forEach(el => revealObserver.observe(el));
 
-    // ----------------------------------------------------
-    // 5. ACTIVE LINK HIGHLIGHTING (IntersectionObserver scrollspy, no scroll listener)
-    // ----------------------------------------------------
+    // ACTIVE LINK HIGHLIGHTING (IntersectionObserver scrollspy, no scroll listener)
     const sections = document.querySelectorAll('section[id]');
     const sectionInView = new Map();
 
@@ -181,15 +154,12 @@ document.addEventListener('DOMContentLoaded', () => {
     sections.forEach(section => navSpyObserver.observe(section));
     updateActiveNav();
 
-    // ----------------------------------------------------
-    // 6. TECH STACK INTERACTIVE FILTERING
-    // ----------------------------------------------------
+    // TECH STACK INTERACTIVE FILTERING
     const filterButtons = document.querySelectorAll('.filter-btn');
     const skillCards = document.querySelectorAll('.skill-card');
 
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // Remove active from other buttons
             filterButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
 
@@ -197,16 +167,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             skillCards.forEach(card => {
                 const cardCategory = card.getAttribute('data-category');
+                const matches = targetCategory === 'all' || cardCategory === targetCategory;
 
-                if (targetCategory === 'all' || cardCategory === targetCategory) {
-                    // Show matching card with beautiful fade state
+                if (matches) {
                     card.style.display = 'flex';
                     setTimeout(() => {
                         card.style.opacity = '1';
                         card.style.transform = 'scale(1)';
                     }, 50);
                 } else {
-                    // Hide non-matching card
                     card.style.opacity = '0';
                     card.style.transform = 'scale(0.9)';
                     setTimeout(() => {
@@ -217,9 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ----------------------------------------------------
-    // 7. TIMELINE SLIDE-IN ANIMATION
-    // ----------------------------------------------------
+    // TIMELINE SLIDE-IN ANIMATION
     const timelineItems = document.querySelectorAll('.timeline-item');
     if (timelineItems.length > 0) {
         const timelineObserver = new IntersectionObserver((entries) => {
@@ -241,9 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timelineItems.forEach(item => timelineObserver.observe(item));
     }
 
-    // ----------------------------------------------------
-    // 9. SKILL CARDS STAGGERED REVEAL
-    // ----------------------------------------------------
+    // SKILL CARDS STAGGERED REVEAL
     const skillsSection = document.getElementById('skills');
     const allSkillCards = document.querySelectorAll('.skill-card');
     let skillsRevealed = false;
@@ -270,9 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
         skillsRevealObserver.observe(skillsSection);
     }
 
-    // ----------------------------------------------------
-    // 10. STATS POP-IN ANIMATION
-    // ----------------------------------------------------
+    // STATS POP-IN ANIMATION
     const profileStats = document.querySelector('.profile-stats');
     if (profileStats) {
         const statsObserver = new IntersectionObserver((entries) => {
@@ -292,9 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
         statsObserver.observe(profileStats);
     }
 
-    // ----------------------------------------------------
-    // 11. 3D TILT EFFECT ON CARDS
-    // ----------------------------------------------------
+    // 3D TILT EFFECT ON CARDS
     document.querySelectorAll('.skill-card, .project-card').forEach(card => {
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
@@ -311,9 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ----------------------------------------------------
-    // 12. HERO EFFECTS
-    // ----------------------------------------------------
+    // HERO EFFECTS
     const isFinePointer = window.matchMedia('(pointer: fine)').matches;
 
     // Hero spotlight + parallax on mousemove

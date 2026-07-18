@@ -5,7 +5,6 @@
  */
 
 import {
-    profile,
     typingPhrases,
     nav,
     hero,
@@ -78,7 +77,7 @@ function renderHero() {
                 en: 'Available for Full-Stack Opportunities',
                 vi: 'Sẵn sàng cho cơ hội Full-Stack',
             })}</span>
-            <h1 class="hero-title-v2">${bi(hero.greeting)} <span class="gradient-text">${profile.name}</span></h1>
+            <h1 class="hero-title-v2">${bi(hero.greeting)} <span class="gradient-text">Trần Hữu Hùng</span></h1>
             <p class="hero-role-v2">${bi(hero.subtitlePrefix)} <span class="typing-text-v2"></span><span class="cursor-v2" aria-hidden="true">|</span></p>
             <div class="hero-cta-row">
                 <a href="${hero.ctaPrimary.href}" class="btn-v2 btn-v2-primary">${bi({ en: hero.ctaPrimary.en, vi: hero.ctaPrimary.vi })}</a>
@@ -543,7 +542,7 @@ function initLazy3D(tileId, canvasWrapId, createScene) {
 /** Boots the hero's tech-shapes scene. @returns {void} */
 function initHero3D() {
     initLazy3D('hero-3d-tile', 'hero-3d-canvas-wrap', async (wrap) => {
-        const { createTechShapesScene } = await import('./js/v2-three-scene.js');
+        const { createTechShapesScene } = await import('./v2-three-scene.js');
         return createTechShapesScene(wrap);
     });
 }
@@ -551,7 +550,7 @@ function initHero3D() {
 /** Boots the Contact section's ambient particle-field backdrop. @returns {void} */
 function initContact3D() {
     initLazy3D('contact-3d-tile', 'contact-3d-canvas-wrap', async (wrap) => {
-        const { createParticleFieldScene } = await import('./js/v2-three-scene.js');
+        const { createParticleFieldScene } = await import('./v2-three-scene.js');
         return createParticleFieldScene(wrap);
     });
 }
@@ -559,7 +558,7 @@ function initContact3D() {
 /** Boots the About avatar tile's small orb+ring accent. @returns {void} */
 function initAbout3D() {
     initLazy3D('about-3d-tile', 'about-3d-canvas-wrap', async (wrap) => {
-        const { createOrbAccentScene } = await import('./js/v2-three-scene.js');
+        const { createOrbAccentScene } = await import('./v2-three-scene.js');
         return createOrbAccentScene(wrap);
     });
 }
@@ -583,7 +582,7 @@ function initSnakeBackground() {
 
     async function boot() {
         try {
-            const { createSnakeBackground } = await import('./js/v2-snake-bg.js');
+            const { createSnakeBackground } = await import('./v2-snake-bg.js');
             controller = await createSnakeBackground(wrap);
         } catch (err) {
             console.warn('[v2] snake background unavailable.', err);

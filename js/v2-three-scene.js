@@ -70,7 +70,7 @@ export async function createTechShapesScene(container) {
     container.appendChild(renderer.domElement);
 
     const group = new THREE.Group();
-    // Count bumped so all 5 geometries get to appear, not just the first 3.
+    // High enough that all 5 geometry types get a chance to appear.
     const shapeCount = width < 500 ? 5 : 8;
     for (let i = 0; i < shapeCount; i++) group.add(createShape(i));
     scene.add(group);
